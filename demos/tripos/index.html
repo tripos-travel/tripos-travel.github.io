@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TripOS brand hub</title>
+  <meta name="description" content="TripOS brand hub: the pilot landing page, a sample trip brochure, the design system, and how to make a brochure for a pilot student.">
+  <link rel="stylesheet" href="output/assets/css/tripos.css">
+  <style>
+    .hub-top{background:var(--board);color:var(--chalk);padding:clamp(48px,7vw,96px) 0 clamp(40px,5vw,64px)}
+    .hub-top .wordmark{font-size:40px;color:var(--chalk)}
+    .hub-top h1{font-size:var(--t-h2);margin-top:36px;max-width:13ch}
+    .hub-top .lede{color:var(--chalk-2);margin-top:20px}
+    .hub-list{padding:clamp(40px,5vw,72px) 0}
+    .hub-row{display:grid;grid-template-columns:4fr 6fr 2fr;gap:24px;align-items:baseline;padding:26px 0;border-bottom:1px solid var(--line-paper);text-decoration:none}
+    .hub-row:first-child{border-top:2px solid var(--ink)}
+    .hub-row h2{font-family:var(--display);font-weight:800;font-stretch:84%;letter-spacing:-.025em;font-size:clamp(30px,3.4vw,46px);line-height:1;transition:transform var(--t-ui) var(--ease)}
+    a.hub-row:hover h2{transform:translateX(8px)}
+    .hub-row p{color:var(--ink-2)}
+    .hub-row .label{color:var(--flap-line);text-align:right}
+    .how{background:var(--paper-2);padding:clamp(40px,5vw,72px) 0}
+    .how h2{font-size:clamp(36px,4.6vw,64px);margin-bottom:24px}
+    .how pre{background:var(--board);color:var(--chalk);font-family:var(--mono);font-size:14px;line-height:1.7;padding:18px 20px;border-radius:var(--r);overflow-x:auto;margin-top:10px}
+    .how .ledger{margin-top:8px}
+    @media (max-width:760px){.hub-row{grid-template-columns:1fr;gap:8px}.hub-row .label{text-align:left}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="hub-top on-board">
+    <div class="container">
+      <span class="wordmark">Trip<span class="wordmark__tile">OS</span></span>
+      <h1 class="display">Brand hub.</h1>
+      <p class="lede">The organizer and in-trip companion for students abroad. Everything below is built from one design system, and every brochure comes out of one command.</p>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hub-list" aria-label="Pages">
+      <div class="container">
+        <a class="hub-row" href="output/Landing-Page.html"><h2>Landing page</h2><p>The pilot page for students abroad. One action: join the pilot.</p><span class="label">Live page</span></a>
+        <a class="hub-row" href="output/Sample-Brochure.html"><h2>Sample brochure</h2><p>Alex&rsquo;s long weekend in London, example data. What every pilot student gets back. Prints to four Letter pages.</p><span class="label">Brochure</span></a>
+        <a class="hub-row" href="output/Style-Guide.html"><h2>Design system</h2><p>The departures-board concept, colors with contrast, type roles and live components.</p><span class="label">For builders</span></a>
+      </div>
+    </section>
+
+    <section class="how" aria-labelledby="how-title">
+      <div class="container">
+        <h2 class="display" id="how-title">Make a brochure.</h2>
+        <ol class="ledger">
+          <li class="ledger__row"><span class="ledger__n">01</span><span class="ledger__text">Download the pilot form responses as a .csv and turn them into draft trip files.<pre>npm run brochure:intake -- responses.csv</pre></span></li>
+          <li class="ledger__row"><span class="ledger__n">02</span><span class="ledger__text">Fill in each trip file in <code>demos/tripos/brochures/data/</code>, or ask Claude: &ldquo;make Maya&rsquo;s brochure&rdquo;. The trip-brochure skill researches the destination and fills the TODOs.</span></li>
+          <li class="ledger__row"><span class="ledger__n">03</span><span class="ledger__text">Build it. Real brochures land in <code>brochures/out/</code>, which never goes online.<pre>npm run brochure -- demos/tripos/brochures/data/maya-paris.json</pre></span></li>
+          <li class="ledger__row"><span class="ledger__n">04</span><span class="ledger__text">Open it, press Print, save as PDF, and send it.</span></li>
+        </ol>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
