@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YohDev Website Playbook — Demo Portal</title>
+  <meta name="description" content="Demo portal showcasing the YohDev website build system across multiple client brands">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #1E2C44;
+      --accent: #CC1A2F;
+      --white: #FFFFFF;
+      --gray-50: #F8F9FA;
+      --gray-100: #E5E3DF;
+      --gray-400: #767676;
+      --gray-600: #494947;
+      --gray-900: #252525;
+
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--gray-900);
+      background: var(--gray-50);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    .header {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-100);
+      padding: 24px 0;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: var(--gray-600);
+    }
+
+    /* Main */
+    .main {
+      padding: 64px 0;
+    }
+
+    .intro {
+      max-width: 720px;
+      margin-bottom: 48px;
+    }
+
+    .intro h2 {
+      margin: 0 0 16px;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    .intro p {
+      font-size: 18px;
+      color: var(--gray-600);
+      line-height: 1.7;
+    }
+
+    /* Demo Grid */
+    .demos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 32px;
+      margin-top: 48px;
+    }
+
+    .demo-card {
+      background: var(--white);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 32px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .demo-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border-color: var(--accent);
+    }
+
+    .demo-card__main {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      flex: 1;
+    }
+
+    .demo-card__logo {
+      height: 60px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    .demo-card__logo img {
+      max-height: 56px;
+      max-width: 210px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .demo-card__logo-fallback {
+      background: var(--primary);
+      color: var(--white);
+      padding: 10px 16px;
+      font-weight: 800;
+      font-size: 18px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .demo-card h3 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    .demo-card__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .demo-card__location {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--gray-50);
+      color: var(--gray-600);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-radius: 4px;
+    }
+
+    .demo-card__status {
+      display: inline-block;
+      padding: 4px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-radius: 4px;
+    }
+
+    .demo-card__status--complete {
+      background: #E6F4EA;
+      color: #1E7E34;
+    }
+
+    .demo-card__status--intake-only {
+      background: #FCEFD9;
+      color: #A35200;
+    }
+
+    .demo-card p {
+      color: var(--gray-600);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .demo-card__links {
+      display: flex;
+      gap: 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .demo-card__link {
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .demo-card__link:hover {
+      text-decoration: underline;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--primary);
+      color: var(--white);
+      padding: 32px 0;
+      margin-top: 96px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: var(--white);
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .demos {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <h1>YohDev Website Playbook</h1>
+      <p>Demo portal showcasing the YohDev website build system — from sales intake to deployable HTML</p>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="container">
+      <div class="intro">
+        <h2>Proven Playbook, Multiple Brands</h2>
+        <p>Each demo below represents the same end-to-end workflow applied to a real client. From sales intake and Figma design to deployable HTML and style guides — proving the repeatability of the YohDev website build system across different industries and markets.</p>
+      </div>
+
+      <div class="demos">
+        <!--DEMO_CARDS-->
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 YohDev · Demo material only · <a href="README.md">Documentation</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>

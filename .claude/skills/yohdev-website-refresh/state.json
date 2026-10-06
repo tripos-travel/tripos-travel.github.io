@@ -1,0 +1,16 @@
+{
+  "version": "0.1.0",
+  "client": null,
+  "current_phase": null,
+  "completed_phases": [],
+  "phase_outputs": {},
+  "start_time": null,
+  "phase_times": {},
+  "placeholders": [],
+  "decisions": {},
+  "config": {
+    "intake_file": null,
+    "output_dir": "output",
+    "client_slug": null
+  }
+}

@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+#
+# Pre-commit gate — three checks on the files staged in THIS commit:
+#   1. ADA / WCAG 2.1 AA (scripts/ada-scan.js)        — staged output pages
+#   2. Site structure / consistency (structure-scan)  — staged pages, hubs, manifests
+#   3. Design craft (scripts/craft-scan.js)           — staged output pages (errors only block)
+#
+# If either has a blocking (ERROR-level) issue — a red-on-dark contrast failure,
+# or a stray orphan page / broken internal link — the commit is aborted until
+# it's fixed. Both checks always run so you see every problem at once.
+#
+# Scope is intentionally "staged files only": you can always commit tooling/docs,
+# but the moment you stage a built page it must be ADA-clean AND on-structure. A
+# pre-existing orphan (e.g. an old Components.html you didn't touch) is surfaced
+# by the full audits, not this gate, so it never blocks unrelated work.
+#
+# Full audits anytime:   npm run ada:scan   ·   npm run structure:scan   ·   npm run craft:scan
+# Bypass in a genuine emergency:
+#   ADA_SKIP=1 git commit ...        # skip the ADA check
+#   STRUCT_SKIP=1 git commit ...     # skip the structure check
+#   CRAFT_SKIP=1 git commit ...      # skip the craft check
+#   git commit --no-verify ...       # skip the whole hook
+
+set -uo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-commit: node not found on PATH — cannot run the commit gates." >&2
+  echo "            Install Node, or bypass once with: git commit --no-verify" >&2
+  exit 1
+fi
+
+status=0
+
+# ── 1. ADA / WCAG AA — staged output pages ──────────────────────────────────
+if [ "${ADA_SKIP:-0}" = "1" ]; then
+  echo "ada-scan: skipped (ADA_SKIP=1)"
+else
+  ada_staged=()
+  while IFS= read -r file; do
+    ada_staged+=("$file")
+  done < <(git diff --cached --name-only --diff-filter=ACM \
+    | grep -E '^demos/.+/output/.+\.html$' || true)
+
+  if [ "${#ada_staged[@]}" -gt 0 ]; then
+    echo "ada-scan: checking ${#ada_staged[@]} staged output page(s) for ADA/WCAG AA issues…"
+    node scripts/ada-scan.js "${ada_staged[@]}" || status=1
+  fi
+fi
+
+# ── 2. Site structure / consistency — staged pages, hubs, manifests ─────────
+# Self-healing: auto-apply the safe fixes and re-stage them, then block ONLY if a
+# judgment call remains — with plain-language guidance, never a stack trace.
+if [ "${STRUCT_SKIP:-0}" = "1" ]; then
+  echo "structure-scan: skipped (STRUCT_SKIP=1)"
+else
+  struct_staged=()
+  while IFS= read -r file; do
+    struct_staged+=("$file")
+  done < <(git diff --cached --name-only --diff-filter=ACM \
+    | grep -E '^demos/.+/(output/.+\.html|index\.html|site\.manifest\.json)$' || true)
+
+  if [ "${#struct_staged[@]}" -gt 0 ]; then
+    echo "structure-scan: checking ${#struct_staged[@]} staged file(s) for structural consistency…"
+    changed_out="$(mktemp)"
+    rc=0
+    node scripts/structure-scan.js --fix --changed-out="$changed_out" "${struct_staged[@]}" || rc=$?
+    # Re-stage anything the auto-fix touched, so the fix lands in this commit.
+    if [ -s "$changed_out" ]; then
+      while IFS= read -r f; do [ -n "$f" ] && git add "$f"; done < "$changed_out"
+      echo "structure-scan: auto-fixed and re-staged the safe repairs above."
+    fi
+    rm -f "$changed_out"
+    if [ "$rc" -ne 0 ]; then
+      status=1
+      echo ""
+      echo "structure-scan: I fixed what was safe automatically, but something needs a judgment call"
+      echo "  — e.g. a page that isn't linked anywhere, or a component gallery that belongs in the Style Guide."
+      echo "  Easiest fix: ask Claude to \"fix the structure\" — the structure-fix skill will wire it in or fold"
+      echo "  it into the Style Guide, checking with you before deleting anything. Or run: npm run structure:fix"
+      echo "  To commit anyway (not recommended): STRUCT_SKIP=1 git commit …"
+    fi
+  fi
+fi
+
+# ── 3. Design craft — staged output pages ───────────────────────────────────
+# Errors are bugs (content hidden until JS runs, animation with no reduced-motion
+# rule, lorem ipsum). Warnings are designer push-back and never block — they're
+# printed so the builder answers them. See docs/DESIGN-CRAFT.md.
+if [ "${CRAFT_SKIP:-0}" = "1" ]; then
+  echo "craft-scan: skipped (CRAFT_SKIP=1)"
+else
+  craft_staged=()
+  while IFS= read -r file; do
+    craft_staged+=("$file")
+  done < <(git diff --cached --name-only --diff-filter=ACM \
+    | grep -E '^demos/.+/output/.+\.html$' || true)
+  if [ "${#craft_staged[@]}" -gt 0 ]; then
+    echo "craft-scan: checking ${#craft_staged[@]} staged output page(s) for design-craft issues…"
+    node scripts/craft-scan.js --quiet "${craft_staged[@]}" || status=1
+  fi
+fi
+
+exit "$status"

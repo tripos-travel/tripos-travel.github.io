@@ -1,0 +1,27 @@
+{
+  "_comment": "Reference image brief. Copy, edit the subjects/alt, point --spec at it. Slots must exist in the brand's imagery.profile.json.",
+  "page": "Homepage.html",
+  "images": [
+    {
+      "slot": "hero",
+      "file": "hero-workspace.webp",
+      "page": "Homepage.html",
+      "subject": "A quiet developer workspace at night, a single monitor casting light across an empty desk",
+      "alt": "A developer workspace lit by the glow of a single monitor at night"
+    },
+    {
+      "slot": "card",
+      "file": "card-strategy.webp",
+      "page": "Homepage.html",
+      "subject": "Two people reviewing a wall of printed wireframes in a dim studio",
+      "alt": "Two people reviewing printed wireframes pinned to a studio wall"
+    },
+    {
+      "slot": "texture",
+      "file": "texture-mesh.webp",
+      "seed": 3,
+      "subject": "A slow-flowing wireframe mesh, thin luminous lines over deep black",
+      "alt": ""
+    }
+  ]
+}

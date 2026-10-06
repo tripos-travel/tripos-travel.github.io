@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>YohDev — Brand Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --ink:#F5F7F7;
+    --ink-2:#E6EAEA;
+    --teal:#00B4B4;
+    --teal-bright:#2DE0E0;
+    --teal-dark:#006E6E;
+    --teal-soft:rgba(0,180,180,0.12);
+    --teal-glow:rgba(0,180,180,0.25);
+    --g-100:#0F1417;
+    --g-200:rgba(255,255,255,0.06);
+    --g-300:rgba(255,255,255,0.12);
+    --g-400:rgba(245,247,247,0.42);
+    --g-500:rgba(245,247,247,0.55);
+    --g-600:rgba(245,247,247,0.70);
+    --g-700:rgba(245,247,247,0.82);
+    --g-800:#E6EAEA;
+    --canvas:#05080A;
+    --surface:#0A0E11;
+    --surface-2:#0D1114;
+    --line:rgba(255,255,255,0.08);
+    --line-2:rgba(255,255,255,0.14);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--canvas);color:var(--ink);overflow-x:hidden}
+  body{font-family:"Roboto",sans-serif;font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{font-family:"Poppins",sans-serif;font-weight:600;letter-spacing:-0.02em;margin:0;color:var(--ink)}
+  a{color:var(--teal-bright);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code,.mono{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--g-100);padding:2px 7px;border-radius:4px;color:var(--teal-bright);border:1px solid var(--line)}
+  .container{max-width:1000px;margin:0 auto;padding:0 48px}
+  .eyebrow{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);font-weight:500}
+
+  /* Cover */
+  .cover{padding:100px 0 80px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+  .cover::before{content:"";position:absolute;top:-200px;left:-200px;width:800px;height:800px;background:radial-gradient(circle,rgba(0,180,180,0.12) 0%,rgba(0,180,180,0) 70%);pointer-events:none}
+  .cover-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:60px;align-items:end}
+  .cover h1{font-size:clamp(52px,7vw,88px);line-height:1;font-weight:600;letter-spacing:-0.04em;margin-top:20px}
+  .cover h1 em{color:var(--teal-bright);font-style:normal}
+  .cover .sub{font-size:17px;color:var(--g-600);max-width:380px;line-height:1.6;margin-top:20px}
+  .cover-meta{display:flex;flex-direction:column;gap:20px}
+  .cover-stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 22px}
+  .cover-stat .label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--g-500);margin-bottom:6px}
+  .cover-stat .val{font-size:15px;color:var(--ink-2);font-weight:500}
+
+  /* TOC */
+  .toc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:36px 40px;margin-top:52px}
+  .toc .h{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:20px;font-family:"Poppins",sans-serif}
+  .toc ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 48px;counter-reset:toc}
+  .toc li{counter-increment:toc;font-size:14.5px;color:var(--g-600);padding:7px 0;display:flex;gap:16px;align-items:baseline;border-bottom:1px solid var(--line)}
+  .toc li:last-child,.toc li:nth-last-child(2):nth-child(odd){border-bottom:none}
+  .toc li::before{content:"0" counter(toc);font-family:"JetBrains Mono",monospace;color:var(--teal);font-size:11px;min-width:22px;flex-shrink:0}
+  .toc li a{color:var(--g-700);font-weight:500}
+  .toc li a:hover{color:var(--teal-bright);text-decoration:none}
+
+  /* Section */
+  section.block{padding:88px 0;border-bottom:1px solid var(--line)}
+  section.block .head{display:grid;grid-template-columns:160px 1fr;gap:48px;margin-bottom:48px;align-items:baseline}
+  section.block .num{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--teal);letter-spacing:0.06em}
+  section.block h2{font-size:clamp(32px,4vw,48px);line-height:1.15;font-weight:600}
+  section.block h2 em{color:var(--teal-bright);font-style:normal}
+  .intro-p{font-size:17px;color:var(--g-600);max-width:640px;line-height:1.7;margin-top:0}
+
+  h3.sh{font-size:20px;margin:40px 0 14px;letter-spacing:-0.01em;font-weight:600;color:var(--ink-2)}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal-bright);font-weight:500;margin:28px 0 10px}
+
+  /* Callout */
+  .callout{background:var(--teal-soft);border:1px solid rgba(0,180,180,0.2);border-radius:8px;padding:20px 24px;margin:24px 0}
+  .callout p{margin:0;font-size:15px;color:var(--g-700);line-height:1.65}
+  .callout strong{color:var(--teal-bright);font-weight:600}
+
+  /* Pill list */
+  ul.pills{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:10px}
+  ul.pills li{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:13.5px;color:var(--g-600)}
+
+  /* Clean list */
+  ul.clean{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+  ul.clean li{padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:8px;display:flex;gap:14px;align-items:flex-start;font-size:14.5px;color:var(--g-700);line-height:1.55}
+  ul.clean li::before{content:"";width:5px;height:5px;border-radius:2px;background:var(--teal);margin-top:10px;flex-shrink:0}
+  ul.clean li strong{color:var(--ink);font-weight:600;display:block;margin-bottom:2px}
+
+  /* Two-col */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px 26px}
+  .card h3,.card h4{font-size:15px;margin:0 0 10px;color:var(--ink-2)}
+  .card p,.card ul{font-size:14px;color:var(--g-600);line-height:1.6;margin:0}
+  .card ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+  .card ul li::before{content:"→ ";color:var(--teal);font-family:"JetBrains Mono",monospace;font-size:11px}
+
+  /* Persona */
+  .persona{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:28px 30px;margin-bottom:16px}
+  .persona .pname{font-family:"Poppins",sans-serif;font-size:18px;font-weight:600;color:var(--ink)}
+  .persona .prole{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;margin-bottom:18px}
+  .persona blockquote{margin:0 0 18px;padding:14px 18px;background:var(--g-100);border-left:3px solid var(--teal);border-radius:0 6px 6px 0;font-size:14.5px;color:var(--g-700);font-style:italic;line-height:1.55}
+  .persona .prow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .persona .pcol .pl{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);margin:0 0 8px}
+  .persona .pcol ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;font-size:13.5px;color:var(--g-600)}
+  .persona .pcol ul li::before{content:"· ";color:var(--teal)}
+
+  /* Token grid */
+  .tokens{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:16px}
+  .token-swatch{border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .token-swatch .swatch{height:52px}
+  .token-swatch .meta{padding:10px 12px;background:var(--surface)}
+  .token-swatch .meta .name{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--g-600)}
+  .token-swatch .meta .hex{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--teal-bright);margin-top:2px}
+
+  /* Type specimen */
+  .type-specimen{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:8px}
+  .type-specimen .ts-head{padding:10px 20px;background:var(--g-100);display:flex;justify-content:space-between;align-items:center}
+  .type-specimen .ts-head span{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--g-500)}
+  .type-specimen .ts-body{padding:20px 24px}
+
+  /* Axis bars */
+  .axis{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+  .axis-row{display:grid;grid-template-columns:100px 1fr 100px;gap:16px;align-items:center;font-size:13px;color:var(--g-500)}
+  .axis-row .bar{background:var(--surface);border:1px solid var(--line);border-radius:999px;height:6px;position:relative}
+  .axis-row .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--teal-dark),var(--teal-bright));position:absolute;top:0;left:0}
+
+  /* Deliverables table */
+  table.del{width:100%;border-collapse:collapse;margin-top:16px;font-size:14px}
+  table.del th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--g-500);padding:10px 14px;border-bottom:1px solid var(--line)}
+  table.del td{padding:13px 14px;border-bottom:1px solid var(--line);color:var(--g-700);vertical-align:top}
+  table.del td:first-child{color:var(--ink-2);font-weight:500}
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;font-family:"JetBrains Mono",monospace;letter-spacing:0.05em}
+  .badge-green{background:rgba(34,197,94,0.12);color:#4ADE80;border:1px solid rgba(34,197,94,0.2)}
+  .badge-teal{background:var(--teal-soft);color:var(--teal-bright);border:1px solid rgba(0,180,180,0.2)}
+
+  /* Footer */
+  footer.foot{background:var(--surface);border-top:1px solid var(--line);padding:40px 0;margin-top:0;text-align:center;font-size:14px;color:var(--g-500)}
+  footer.foot a{color:var(--teal-bright)}
+
+  /* Responsive */
+  @media(max-width:768px){
+    .container{padding:0 24px}
+    .cover-grid,.two,.persona .prow,section.block .head,.toc ol{grid-template-columns:1fr}
+    .cover h1{font-size:52px}
+    section.block .head{gap:8px}
+    table.del{table-layout:fixed;width:100%}
+    table.del th,table.del td{word-break:break-word;overflow-wrap:anywhere;padding:10px 8px}
+    code,.mono{overflow-wrap:anywhere;word-break:break-word}
+  }
+</style>
+</head>
+<body>
+
+<!-- Cover -->
+<section class="cover">
+  <div class="container">
+    <div class="cover-grid">
+      <div>
+        <p class="eyebrow">Brand Playbook · For brand &amp; stakeholders</p>
+        <h1>Yoh<em>Dev</em></h1>
+        <p class="sub">Strategy, design system, and homepage rationale for the YohDev website refresh. Remote-first development partner, 2026.</p>
+      </div>
+      <div class="cover-meta">
+        <div class="cover-stat"><div class="label">Client</div><div class="val">YohDev</div></div>
+        <div class="cover-stat"><div class="label">Industry</div><div class="val">Web Development / Technical Agency</div></div>
+        <div class="cover-stat"><div class="label">Primary Market</div><div class="val">SMB founders, product teams, marketing orgs</div></div>
+        <div class="cover-stat"><div class="label">Status</div><div class="val"><span class="badge badge-green">Complete</span></div></div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <div class="h">Contents</div>
+      <ol>
+        <li><a href="#positioning">Brand Positioning</a></li>
+        <li><a href="#audience">Target Audience</a></li>
+        <li><a href="#personas">Personas</a></li>
+        <li><a href="#voice">Voice &amp; Tone</a></li>
+        <li><a href="#design-system">Design System</a></li>
+        <li><a href="#homepage">Homepage Strategy</a></li>
+        <li><a href="#messaging">Messaging Architecture</a></li>
+        <li><a href="#deliverables">Deliverables</a></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- 01 Positioning -->
+<section class="block" id="positioning">
+  <div class="container">
+    <div class="head">
+      <span class="num">01 · positioning</span>
+      <h2>Who YohDev<br><em>is for.</em></h2>
+    </div>
+
+    <p class="intro-p">YohDev is a remote-first development partner for teams who are tired of managing agencies. The brand's core promise is seniority without overhead — a team that ships without needing to be hand-held.</p>
+
+    <div class="callout">
+      <p><strong>Positioning statement:</strong> YohDev is the development partner for SMB founders and product teams who need senior engineering execution without the overhead of hiring, onboarding, or managing a traditional agency queue.</p>
+    </div>
+
+    <h3 class="sh">What makes YohDev different</h3>
+    <ul class="clean">
+      <li><strong>Senior-first, not team-padded</strong>You work directly with experienced engineers — not an account manager who relays messages to a junior dev.</li>
+      <li><strong>Scope-honest</strong>Honest written roadmaps before work starts. No black-box phases, no surprise invoices at the end of a sprint.</li>
+      <li><strong>Remote-native</strong>Not remote-adapted. Built from the ground up for async communication, clear documentation, and weekly demos.</li>
+      <li><strong>Service breadth without agency bloat</strong>From WordPress block themes to React apps, AI readiness, and legacy modernization — one partner, not a roster of specialists to coordinate.</li>
+    </ul>
+
+    <p class="kicker">Personality Axes</p>
+    <div class="axis">
+      <div class="axis-row"><span>Serious</span><div class="bar"><div class="fill" style="width:70%"></div></div><span>Playful</span></div>
+      <div class="axis-row"><span>Classic</span><div class="bar"><div class="fill" style="width:80%"></div></div><span>Modern</span></div>
+      <div class="axis-row"><span>Quiet</span><div class="bar"><div class="fill" style="width:55%"></div></div><span>Loud</span></div>
+      <div class="axis-row"><span>Premium</span><div class="bar"><div class="fill" style="width:40%"></div></div><span>Accessible</span></div>
+      <div class="axis-row"><span>Literal</span><div class="bar"><div class="fill" style="width:65%"></div></div><span>Abstract</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 Audience -->
+<section class="block" id="audience">
+  <div class="container">
+    <div class="head">
+      <span class="num">02 · audience</span>
+      <h2>Who the<br><em>site is for.</em></h2>
+    </div>
+
+    <p class="intro-p">The homepage has one job: convert a founder or technical lead who found YohDev through a referral or search and needs to quickly answer "are these the right people for my project?"</p>
+
+    <h3 class="sh">Primary audience</h3>
+    <div class="two">
+      <div class="card">
+        <h4>SMB Founders (5–50 person companies)</h4>
+        <ul>
+          <li>Need development work done but can't justify a full-time hire</li>
+          <li>Have been burned by agencies that overpromise and under-deliver</li>
+          <li>Decide fast when they trust the provider</li>
+          <li>Mobile is important but desktop is where they research vendors</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Product / Marketing Leads at Growth Teams</h4>
+        <ul>
+          <li>Have a roadmap item that their internal team can't get to</li>
+          <li>Need a clear SOW and predictable timeline</li>
+          <li>Will share the site with a decision-maker before reaching out</li>
+          <li>Skim quickly — proof and clarity beat cleverness</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sh">Secondary audiences</h3>
+    <ul class="clean">
+      <li><strong>Referral recipients</strong>Someone was told "you should talk to YohDev" — arrives with high intent, just needs to confirm legitimacy quickly.</li>
+      <li><strong>Potential collaborators / subcontract partners</strong>Other agencies or freelancers scoping white-label capacity.</li>
+    </ul>
+
+    <h3 class="sh">Who this is NOT for</h3>
+    <ul class="pills">
+      <li>Enterprise procurement teams (too slow, too committee-driven)</li>
+      <li>Clients who want the cheapest option</li>
+      <li>Clients who need a full design agency (brand, print, campaigns)</li>
+      <li>Solo micro-businesses with a $500 budget</li>
+    </ul>
+
+    <p class="kicker">What they're checking for on the homepage</p>
+    <ul class="clean">
+      <li><strong>Legitimacy</strong>"Are these real engineers or a template shop?"</li>
+      <li><strong>Clarity of scope</strong>"Do I understand what they actually do?"</li>
+      <li><strong>Proof</strong>"Have they done this before for someone like me?"</li>
+      <li><strong>Access</strong>"Is there an easy way to start a conversation?"</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 03 Personas -->
+<section class="block" id="personas">
+  <div class="container">
+    <div class="head">
+      <span class="num">03 · personas</span>
+      <h2>Two people<br><em>reading this.</em></h2>
+    </div>
+
+    <div class="persona">
+      <div class="pname">The Founder Who's Been Burned</div>
+      <div class="prole">Persona 01 · SMB Founder · 38–52 · US, remote-first</div>
+      <blockquote>"Last agency charged me $18k and I had to rewrite half of it myself. I need someone who can just own it."</blockquote>
+      <div class="prow">
+        <div class="pcol">
+          <div class="pl">What they want</div>
+          <ul>
+            <li>Senior execution without project management overhead</li>
+            <li>Honest scope and pricing upfront</li>
+            <li>Someone who can push back when the spec is wrong</li>
+          </ul>
+        </div>
+        <div class="pcol">
+          <div class="pl">What makes them reach out</div>
+          <ul>
+            <li>Clear explanation of what YohDev actually does</li>
+            <li>A visible, direct contact path</li>
+            <li>No jargon, no vague "partnership" language</li>
+          </ul>
+        </div>
+        <div class="pcol">
+          <div class="pl">What makes them leave</div>
+          <ul>
+            <li>Buzzword-heavy copy ("solutions", "synergy")</li>
+            <li>No pricing signal or engagement model</li>
+            <li>Feels like a big agency with juniors behind the curtain</li>
+          </ul>
+        </div>
+        <div class="pcol">
+          <div class="pl">How they find YohDev</div>
+          <ul>
+            <li>Referral from founder peer</li>
+            <li>LinkedIn or Twitter mention</li>
+            <li>Organic search for "WordPress developer for hire"</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="persona">
+      <div class="pname">The Overloaded Product Lead</div>
+      <div class="prole">Persona 02 · Product / Growth Lead · 30–44 · Growth-stage startup</div>
+      <blockquote>"Our sprint is full and we've got a website refresh that needs to ship before the conference. I need someone who can run it without hand-holding."</blockquote>
+      <div class="prow">
+        <div class="pcol">
+          <div class="pl">What they want</div>
+          <ul>
+            <li>A dev partner who works independently with minimal oversight</li>
+            <li>Clear weekly updates and predictable delivery</li>
+            <li>Someone who can make smart decisions autonomously</li>
+          </ul>
+        </div>
+        <div class="pcol">
+          <div class="pl">What makes them reach out</div>
+          <ul>
+            <li>Proof of similar-scale project delivery</li>
+            <li>Process that shows structured execution</li>
+            <li>Quick response time implied or stated</li>
+          </ul>
+        </div>
+        <div class="pcol">
+          <div class="pl">What makes them leave</div>
+          <ul>
+            <li>Vague "we do everything" positioning</li>
+            <li>No indication of how engagements are structured</li>
+            <li>Feels too small or too junior for their scope</li>
+          </ul>
+        </div>
+        <div class="pcol">
+          <div class="pl">How they find YohDev</div>
+          <ul>
+            <li>Referred by engineering colleague</li>
+            <li>Google search "React agency for startups"</li>
+            <li>GitHub profile or open source work</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 Voice -->
+<section class="block" id="voice">
+  <div class="container">
+    <div class="head">
+      <span class="num">04 · voice &amp; tone</span>
+      <h2>How YohDev<br><em>sounds.</em></h2>
+    </div>
+
+    <p class="intro-p">The YohDev voice is confident without being cocky, technical without being cold. It reads like a senior engineer talking to a peer — direct, specific, no filler.</p>
+
+    <div class="two">
+      <div class="card">
+        <h3>Is</h3>
+        <ul>
+          <li>Direct and specific</li>
+          <li>Technically credible</li>
+          <li>Honest about tradeoffs</li>
+          <li>Warm but not performatively friendly</li>
+          <li>Irreverent where earned</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Is Not</h3>
+        <ul>
+          <li>Corporate or buzzword-heavy</li>
+          <li>Over-promising ("best in class")</li>
+          <li>Cutesy or emoji-forward</li>
+          <li>Vague or abstract ("solutions," "journey")</li>
+          <li>Loud for its own sake</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="kicker">In their voice</p>
+    <div class="callout">
+      <p>"The development partner you don't have to manage."</p>
+    </div>
+
+    <p class="kicker">Not their voice</p>
+    <div class="callout" style="border-color:rgba(255,80,80,0.2);background:rgba(255,80,80,0.06)">
+      <p style="color:var(--g-600)">"We offer comprehensive digital solutions to accelerate your brand's journey toward transformation."</p>
+    </div>
+
+    <h3 class="sh">Words to use / avoid</h3>
+    <div class="two">
+      <div class="card">
+        <h4>Use</h4>
+        <ul>
+          <li>Partner, not vendor</li>
+          <li>Ship, build, deploy</li>
+          <li>Senior, experienced</li>
+          <li>Honest, direct, clear</li>
+          <li>Weekly demos, written plans</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Avoid</h4>
+        <ul>
+          <li>Solutions, synergy, leverage</li>
+          <li>Best-in-class, world-class</li>
+          <li>Journey, transformation</li>
+          <li>Cutting-edge, innovative</li>
+          <li>Cheap, affordable (price signal OK, not this framing)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 Design System -->
+<section class="block" id="design-system">
+  <div class="container">
+    <div class="head">
+      <span class="num">05 · design system</span>
+      <h2>Tokens &amp;<br><em>visual language.</em></h2>
+    </div>
+
+    <p class="intro-p">The YohDev visual system is built on a near-black dark canvas with a single accent — teal — used sparingly. The result is technical credibility without the "startup" clichés of gradients and blobs.</p>
+
+    <p class="kicker">Color Palette</p>
+    <div class="tokens">
+      <div class="token-swatch">
+        <div class="swatch" style="background:#05080A"></div>
+        <div class="meta"><div class="name">Canvas</div><div class="hex">#05080A</div></div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch" style="background:#0A0E11"></div>
+        <div class="meta"><div class="name">Surface</div><div class="hex">#0A0E11</div></div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch" style="background:#0D1114"></div>
+        <div class="meta"><div class="name">Surface 2</div><div class="hex">#0D1114</div></div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch" style="background:#00B4B4"></div>
+        <div class="meta"><div class="name">Teal</div><div class="hex">#00B4B4</div></div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch" style="background:#2DE0E0"></div>
+        <div class="meta"><div class="name">Teal Bright</div><div class="hex">#2DE0E0</div></div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch" style="background:#006E6E"></div>
+        <div class="meta"><div class="name">Teal Dark</div><div class="hex">#006E6E</div></div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch" style="background:#F5F7F7"></div>
+        <div class="meta"><div class="name">Ink</div><div class="hex">#F5F7F7</div></div>
+      </div>
+    </div>
+
+    <p class="kicker">Typography</p>
+    <div class="type-specimen">
+      <div class="ts-head"><span class="eyebrow">Display / Heading</span><span>Poppins 600 · Google Fonts</span></div>
+      <div class="ts-body"><p style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:600;letter-spacing:-0.03em;color:var(--ink);margin:0;line-height:1.1">The development partner<br>you don't have to manage.</p></div>
+    </div>
+    <div class="type-specimen" style="margin-top:12px">
+      <div class="ts-head"><span class="eyebrow">Body</span><span>Roboto 400 · Google Fonts</span></div>
+      <div class="ts-body"><p style="font-family:'Roboto',sans-serif;font-size:16px;color:var(--g-600);margin:0;line-height:1.65">From websites and UX to web apps, AI readiness, and legacy modernization — YohDev plugs into your team as a senior engineering partner, not a queue you have to babysit.</p></div>
+    </div>
+    <div class="type-specimen" style="margin-top:12px">
+      <div class="ts-head"><span class="eyebrow">Mono / UI Labels</span><span>JetBrains Mono 400 · Google Fonts</span></div>
+      <div class="ts-body"><p style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal-bright);margin:0">// services · Remote-first · Est. 2019</p></div>
+    </div>
+
+    <p class="kicker">Design principles</p>
+    <ul class="clean">
+      <li><strong>Dark canvas, not dark mode</strong>The dark aesthetic is the identity, not a preference toggle. It signals technical depth and avoids the bright-white generic agency look.</li>
+      <li><strong>Teal as the only accent</strong>Used for CTAs, code labels, highlights, and interactive states. Never used decoratively for its own sake.</li>
+      <li><strong>Mono code labels everywhere</strong>JetBrains Mono eyebrows (<code>// services</code>, <code>phase_01</code>) create a developer-native visual language that differentiates from general creative agencies.</li>
+      <li><strong>No gradients, no blobs, no stock photos of laptops</strong>The faceted SVG art in the hero is the only decorative element. All other visuals are structural.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 06 Homepage Strategy -->
+<section class="block" id="homepage">
+  <div class="container">
+    <div class="head">
+      <span class="num">06 · homepage</span>
+      <h2>Section by<br><em>section rationale.</em></h2>
+    </div>
+
+    <p class="intro-p">Every section earns its place by answering one question the primary persona has when they arrive. The flow follows a trust-building sequence, not a traditional agency template.</p>
+
+    <ul class="clean">
+      <li>
+        <strong>Hero — "What do you do and is it for me?"</strong>
+        Headline: "The development partner you don't have to manage." Direct, specific, addresses the primary pain (managing agencies) in the first five words. CTA is double: primary action (Start a project) and secondary exploration (See what we build) for people not ready to commit.
+      </li>
+      <li>
+        <strong>Capabilities marquee — "What's in scope?"</strong>
+        Scrolling ticker of capabilities establishes breadth without a long bulleted list. Keeps the page moving and answers "what kind of work" before the services section.
+      </li>
+      <li>
+        <strong>Services accordion — "Can they do the specific thing I need?"</strong>
+        Seven service lines, each with a one-line description that is technically specific. The accordion format lets the visitor self-select without scrolling a wall of text. Services are named by deliverable, not by team function.
+      </li>
+      <li>
+        <strong>Process — "How does this actually work?"</strong>
+        Four steps (Discovery → Roadmap → Agile Sprints → Optimize) answer "what does working with YohDev look like?" Placed after services because visitors need to know what you do before caring how you do it.
+      </li>
+      <li>
+        <strong>CTA — "How do I start?"</strong>
+        Final section is minimal: one headline, one subline, one email address. No form, no calendar embed. Direct email contact signals that a human will respond — not a CRM drip sequence.
+      </li>
+    </ul>
+
+    <p class="kicker">Strategic decisions</p>
+    <div class="two">
+      <div class="card">
+        <h3>No pricing on the homepage</h3>
+        <p>YohDev's engagements are scoped per project. Showing pricing would either over-promise (too low) or filter out qualified leads (too high). The CTA copy sets expectations: "honest feedback on scope, timeline, and whether we're the right fit."</p>
+      </div>
+      <div class="card">
+        <h3>No hero video or animation</h3>
+        <p>The audience is senior technical leads and founders on fast connections — but the principle holds: video in a hero signals "marketing-heavy agency," which is the anti-positioning for YohDev. The faceted SVG art is lightweight and developer-native.</p>
+      </div>
+      <div class="card">
+        <h3>Single primary CTA color</h3>
+        <p>Teal is only used on one CTA per screen. Secondary CTAs are ghost/outline. This prevents button soup and keeps the accent meaningful — clicking the teal button is always the most important action on the page.</p>
+      </div>
+      <div class="card">
+        <h3>Email address visible, not hidden behind a form</h3>
+        <p>Showing <code>hello@yohdev.com</code> directly signals directness and accessibility — core to the brand voice. Founders who've been burned by agencies appreciate knowing there's a real person on the other end.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 Messaging -->
+<section class="block" id="messaging">
+  <div class="container">
+    <div class="head">
+      <span class="num">07 · messaging</span>
+      <h2>The three<br><em>things we say.</em></h2>
+    </div>
+
+    <p class="intro-p">Every piece of copy on the homepage is downstream of three messaging pillars. If a section doesn't serve one of these, it doesn't exist.</p>
+
+    <ul class="clean">
+      <li>
+        <strong>Pillar 1 — Senior execution, not agency overhead</strong>
+        The homepage must communicate that YohDev's work is done by senior engineers who own their output — not routed through account managers or delegated to juniors. This is the primary differentiator and the first thing the hero communicates.
+      </li>
+      <li>
+        <strong>Pillar 2 — Scope honesty and process clarity</strong>
+        Founders who've been burned by agencies care deeply about predictability. The process section and CTA copy both reinforce that YohDev writes scopes before it starts, ships weekly demos, and tells you honestly if it's not the right fit.
+      </li>
+      <li>
+        <strong>Pillar 3 — Breadth without bloat</strong>
+        YohDev handles the full range of web development work a growing company needs — but doesn't hire armies of specialists to do it. The services section proves breadth; the "partner, not vendor" framing counters the "too big to know our name" fear.
+      </li>
+    </ul>
+
+    <p class="kicker">Messaging guardrails</p>
+    <ul class="clean">
+      <li><strong>Never claim "best" or "fastest"</strong>The audience has heard these claims before. Specific language ("weekly demos," "written plan before work starts") is more persuasive than superlatives.</li>
+      <li><strong>No case study carousels on the homepage</strong>Carousels hide content and reduce trust with technical audiences. Proof is delivered through specificity of service descriptions, not a slider.</li>
+      <li><strong>Don't describe the process as "seamless" or "effortless"</strong>These words signal that the copy is written by someone who hasn't done the work. YohDev's audience will notice.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 08 Deliverables -->
+<section class="block" id="deliverables" style="border-bottom:none">
+  <div class="container">
+    <div class="head">
+      <span class="num">08 · deliverables</span>
+      <h2>What was<br><em>produced.</em></h2>
+    </div>
+
+    <table class="del">
+      <thead>
+        <tr>
+          <th>Deliverable</th>
+          <th>Format</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Homepage</td>
+          <td><code>Homepage.html</code></td>
+          <td><span class="badge badge-green">Complete</span></td>
+          <td>Self-contained HTML + React. Deployable to GitHub Pages or any static host.</td>
+        </tr>
+        <tr>
+          <td>Style Guide</td>
+          <td><code>Style-Guide.html</code></td>
+          <td><span class="badge badge-green">Complete</span></td>
+          <td>Full component library — color tokens, typography, buttons, cards, form elements.</td>
+        </tr>
+        <tr>
+          <td>Brand Playbook</td>
+          <td><code>Playbook.html</code></td>
+          <td><span class="badge badge-green">Complete</span></td>
+          <td>This document. Strategy, personas, voice, design rationale.</td>
+        </tr>
+        <tr>
+          <td>WordPress theme.json</td>
+          <td><code>theme.json</code></td>
+          <td><span class="badge badge-teal">In Style Guide</span></td>
+          <td>Block theme tokens derived from the design system. Use as a starting point for WP implementation.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="margin-top:40px">
+      <p>This playbook was produced using the <strong>YohDev Website Refresh skill</strong> — a six-phase AI-assisted workflow that takes a Sales Handoff package to a deployable playbook. <a href="https://github.com/yohdev/yd-website-playbook" style="color:var(--teal-bright)">github.com/yohdev/yd-website-playbook</a></p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="container">
+    <p>YohDev Website Refresh Playbook · <a href="https://yohdev.com">yohdev.com</a> · Built with the <a href="https://github.com/yohdev/yd-website-playbook">YohDev Website Refresh Skill</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

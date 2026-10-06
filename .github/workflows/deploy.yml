@@ -1,0 +1,436 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ─────────────────────────────────────────────────────────────
+  # Build the site once; reused by production deploy and PR preview
+  # ─────────────────────────────────────────────────────────────
+  build:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Build site
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          path: ./dist
+          retention-days: 1
+
+  # ─────────────────────────────────────────────────────────────
+  # Accessibility gate: ADA / WCAG 2.1 AA scan of the output pages.
+  # - Full audit → self-contained HTML report uploaded as an artifact
+  #   (downloadable from the run; never committed to the repo).
+  # - Merge/deploy is blocked only on the output pages CHANGED here, so the
+  #   pre-existing backlog stays visible without blocking unrelated work.
+  # ─────────────────────────────────────────────────────────────
+  accessibility:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # need history to diff changed pages against the base
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Run full ADA audit → HTML report
+        run: |
+          mkdir -p ada-report
+          # Full audit of every output page. Always succeeds here (the blocking
+          # decision happens in the gate step below); we just want the report.
+          node scripts/ada-scan.js --json --html=ada-report/index.html > ada-report/report.json || true
+          node -e '
+            const j = require("./ada-report/report.json");
+            const fs = require("fs");
+            const sum = process.env.GITHUB_STEP_SUMMARY;
+            if (sum) fs.appendFileSync(sum,
+              `## ADA / WCAG 2.1 AA audit\n\n**${j.errors} error(s) · ${j.warnings} warning(s)** across ${j.files} page(s).\n\n` +
+              `Download the **ada-report** artifact for the full HTML report.\n`);
+          '
+
+      - name: Upload ADA HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ada-report
+          path: ada-report/
+          retention-days: 14
+
+      - name: Comment ADA summary on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            let j; try { j = JSON.parse(fs.readFileSync('ada-report/report.json', 'utf8')); } catch { return; }
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const marker = '<!-- yd-ada -->';
+            const byFile = {};
+            for (const f of j.findings) {
+              if (f.level !== 'ERROR') continue;
+              const k = f.file.replace(/^.*?(demos\/)/, '$1');
+              byFile[k] = (byFile[k] || 0) + 1;
+            }
+            const top = Object.entries(byFile).sort((a, b) => b[1] - a[1]).slice(0, 8)
+              .map(([k, v]) => `- \`${k}\` — ${v} error(s)`).join('\n');
+            const body = [
+              marker,
+              '**ADA / WCAG 2.1 AA audit**',
+              '',
+              `${j.errors} error(s) · ${j.warnings} warning(s) across ${j.files} page(s).`,
+              '',
+              `Full HTML report: open the **ada-report** artifact on the [workflow run](${runUrl}).`,
+              top ? `\n<details><summary>Pages with errors (whole-site audit)</summary>\n\n${top}\n</details>` : '',
+              '',
+              '_The merge gate runs on the output pages changed in this PR; the counts above are the whole-site audit._',
+            ].join('\n');
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner: context.repo.owner, repo: context.repo.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body });
+            }
+
+      - name: Gate — output pages changed here must pass
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSH_BASE: ${{ github.event.before }}
+          PUSH_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" = "pull_request" ]; then BASE="$PR_BASE"; HEAD="$PR_HEAD"; else BASE="$PUSH_BASE"; HEAD="$PUSH_HEAD"; fi
+          if [ -z "${BASE:-}" ] || ! git rev-parse --quiet --verify "${BASE}^{commit}" >/dev/null 2>&1; then
+            echo "Base commit unavailable — skipping changed-page gate."
+            exit 0
+          fi
+          # three-dot = merge-base..HEAD, matching GitHub's "Files changed"
+          mapfile -t CHANGED < <(git diff --name-only --diff-filter=ACMR "${BASE}...${HEAD}" -- 'demos/*/output/*.html')
+          if [ "${#CHANGED[@]}" -eq 0 ]; then
+            echo "No output pages changed — accessibility gate passes."
+            exit 0
+          fi
+          echo "Gating ${#CHANGED[@]} changed output page(s):"
+          printf '  %s\n' "${CHANGED[@]}"
+          node scripts/ada-scan.js "${CHANGED[@]}"
+
+  # ─────────────────────────────────────────────────────────────
+  # Structure gate: site consistency scan of the output pages.
+  # - Full audit → self-contained HTML report uploaded as an artifact.
+  # - Merge/deploy is blocked only on the pages/hubs/manifests CHANGED here, so
+  #   a pre-existing orphan (e.g. an old Components.html) stays visible in the
+  #   report without blocking unrelated work.
+  # ─────────────────────────────────────────────────────────────
+  structure:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # need history to diff changed pages against the base
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Run full structure audit → HTML report
+        run: |
+          mkdir -p structure-report
+          # Full audit of every brand. Always succeeds here (the blocking
+          # decision happens in the gate step below); we just want the report.
+          node scripts/structure-scan.js --json --html=structure-report/index.html > structure-report/report.json || true
+          node -e '
+            const j = require("./structure-report/report.json");
+            const fs = require("fs");
+            const sum = process.env.GITHUB_STEP_SUMMARY;
+            if (sum) fs.appendFileSync(sum,
+              `## Site structure / consistency audit\n\n**${j.errors} error(s) · ${j.warnings} warning(s)** across ${j.files} brand(s).\n\n` +
+              `Download the **structure-report** artifact for the full HTML report.\n`);
+          '
+
+      - name: Upload structure HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: structure-report
+          path: structure-report/
+          retention-days: 14
+
+      - name: Comment structure summary on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            let j; try { j = JSON.parse(fs.readFileSync('structure-report/report.json', 'utf8')); } catch { return; }
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const marker = '<!-- yd-structure -->';
+            const byFile = {};
+            for (const f of j.findings) {
+              if (f.level !== 'ERROR') continue;
+              const k = f.file.replace(/^.*?(demos\/)/, '$1');
+              byFile[k] = (byFile[k] || 0) + 1;
+            }
+            const top = Object.entries(byFile).sort((a, b) => b[1] - a[1]).slice(0, 8)
+              .map(([k, v]) => `- \`${k}\` — ${v} issue(s)`).join('\n');
+            const body = [
+              marker,
+              '**Site structure / consistency audit**',
+              '',
+              `${j.errors} error(s) · ${j.warnings} warning(s) across ${j.files} brand(s).`,
+              '',
+              `Full HTML report: open the **structure-report** artifact on the [workflow run](${runUrl}).`,
+              top ? `\n<details><summary>Files with structural issues (whole-site audit)</summary>\n\n${top}\n</details>` : '',
+              '',
+              '_The merge gate runs on the pages/hubs/manifests changed in this PR; the counts above are the whole-site audit._',
+            ].join('\n');
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner: context.repo.owner, repo: context.repo.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body });
+            }
+
+      - name: Gate — pages/hubs/manifests changed here must pass
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSH_BASE: ${{ github.event.before }}
+          PUSH_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" = "pull_request" ]; then BASE="$PR_BASE"; HEAD="$PR_HEAD"; else BASE="$PUSH_BASE"; HEAD="$PUSH_HEAD"; fi
+          if [ -z "${BASE:-}" ] || ! git rev-parse --quiet --verify "${BASE}^{commit}" >/dev/null 2>&1; then
+            echo "Base commit unavailable — skipping changed-page gate."
+            exit 0
+          fi
+          # three-dot = merge-base..HEAD, matching GitHub's "Files changed"
+          mapfile -t CHANGED < <(git diff --name-only --diff-filter=ACMR "${BASE}...${HEAD}" -- 'demos/*/output/*.html' 'demos/*/index.html' 'demos/*/site.manifest.json')
+          if [ "${#CHANGED[@]}" -eq 0 ]; then
+            echo "No pages/hubs/manifests changed — structure gate passes."
+            exit 0
+          fi
+          echo "Gating ${#CHANGED[@]} changed file(s):"
+          printf '  %s\n' "${CHANGED[@]}"
+          node scripts/structure-scan.js "${CHANGED[@]}"
+
+  # ─────────────────────────────────────────────────────────────
+  # Production: push to main → GitHub Pages root
+  # ─────────────────────────────────────────────────────────────
+  deploy-main:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build, accessibility, structure]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 1
+        continue-on-error: true
+        id: checkout_ghpages
+
+      - name: Initialize gh-pages branch if missing
+        if: steps.checkout_ghpages.outcome == 'failure'
+        run: |
+          git checkout --orphan gh-pages
+          git rm -rf . || true
+          touch .nojekyll
+          git add .nojekyll
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git commit -m "Initialize gh-pages branch"
+          git push origin gh-pages
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site-build
+          path: ./incoming
+
+      - name: Publish to root
+        run: |
+          find . -maxdepth 1 -not -name '.' -not -name '.git' -not -name 'incoming' -exec rm -rf {} +
+          cp -r incoming/. .
+          rm -rf incoming
+          touch .nojekyll
+
+      - name: Commit and push
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --staged --quiet && echo "No changes to deploy" && exit 0
+          git commit -m "Deploy main to root"
+          git push origin gh-pages
+
+  # ─────────────────────────────────────────────────────────────
+  # PR preview: unique Surge URL per PR (approve-before-go-live)
+  # ─────────────────────────────────────────────────────────────
+  preview:
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site-build
+          path: ./dist
+
+      - name: Deploy to Surge
+        id: surge
+        env:
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: |
+          if [ -z "$SURGE_TOKEN" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "SURGE_TOKEN secret not set — skipping preview deploy."
+            exit 0
+          fi
+          DOMAIN="yd-playbook-pr-${{ github.event.number }}.surge.sh"
+          npx --yes surge ./dist "$DOMAIN" --token "$SURGE_TOKEN"
+          echo "configured=true" >> "$GITHUB_OUTPUT"
+          echo "url=https://$DOMAIN" >> "$GITHUB_OUTPUT"
+
+      - name: Comment preview URL
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const configured = '${{ steps.surge.outputs.configured }}' === 'true';
+            const url = '${{ steps.surge.outputs.url }}';
+            const branch = context.payload.pull_request.head.ref;
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${{ github.run_id }}`;
+            const marker = '<!-- yd-preview -->';
+            const body = configured
+              ? [
+                  marker,
+                  '**Preview Ready**',
+                  '',
+                  url,
+                  '',
+                  'Lists every demo under `demos/` — review and approve before it goes live.',
+                  '',
+                  '_Built from `' + branch + '` · [Workflow run](' + runUrl + ')_',
+                ].join('\n')
+              : [
+                  marker,
+                  '**Preview deploy not configured yet**',
+                  '',
+                  'Add a `SURGE_TOKEN` repository secret to enable unique per-PR preview links.',
+                  'Setup steps are in `docs/DEPLOYMENT.md`.',
+                  '',
+                  '_[Workflow run](' + runUrl + ')_',
+                ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+  # ─────────────────────────────────────────────────────────────
+  # PR closed: tear down the Surge preview
+  # ─────────────────────────────────────────────────────────────
+  cleanup-preview:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Teardown Surge preview
+        id: teardown
+        env:
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: |
+          if [ -z "$SURGE_TOKEN" ]; then
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            echo "SURGE_TOKEN not set — nothing to tear down."
+            exit 0
+          fi
+          DOMAIN="yd-playbook-pr-${{ github.event.number }}.surge.sh"
+          npx --yes surge teardown "$DOMAIN" --token "$SURGE_TOKEN" || true
+          echo "skipped=false" >> "$GITHUB_OUTPUT"
+
+      - name: Comment cleanup confirmation
+        if: steps.teardown.outputs.skipped == 'false'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: 'Preview for PR #${{ github.event.number }} has been torn down.',
+            });

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>YohDev — Brand Basics</title>
+<meta name="description" content="A plain-language, one-page brand guide for YohDev — colors, fonts, and building blocks for marketing and owners. No code, no jargon."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#05080A; --bg-2:#0A0E11; --surface:#0D1114;
+    --line:rgba(255,255,255,0.08); --line-2:rgba(255,255,255,0.14);
+    --fg:#F5F7F7; --fg-2:rgba(245,247,247,0.74); --fg-3:rgba(245,247,247,0.55);
+    --teal:#00B4B4; --teal-bright:#2DE0E0;
+    --ok:#4ADE80; --no:#FF6B6B;
+    --display:"Poppins",sans-serif; --body:"Roboto",sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+    --radius:12px; --page-max:940px; --px:clamp(20px,5vw,48px);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;font-family:var(--body);font-size:17px;line-height:1.6;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0;letter-spacing:-0.02em}
+  p{margin:0}
+  a{color:var(--teal-bright)}
+
+  .site-header{background:var(--bg-2);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+  .site-header__inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:16px var(--px)}
+  .logo{font-family:var(--display);font-weight:700;font-size:20px;color:var(--fg);letter-spacing:-0.03em;text-decoration:none}
+  .logo span{color:var(--teal)}
+  .site-header__tag{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-3)}
+  .site-header__link{margin-left:auto;font-family:var(--display);font-weight:500;font-size:14px;color:var(--teal-bright);text-decoration:none}
+
+  .hero{border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%)}
+  .hero__inner{max-width:var(--page-max);margin:0 auto;padding:64px var(--px)}
+  .eyebrow{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal)}
+  .hero h1{font-weight:600;font-size:clamp(32px,6vw,52px);margin-top:12px}
+  .hero h1 em{color:var(--teal-bright);font-style:normal}
+  .hero p{color:var(--fg-2);font-size:clamp(16px,2.4vw,19px);margin-top:16px;max-width:600px}
+
+  main{max-width:var(--page-max);margin:0 auto;padding:24px var(--px) 96px}
+  section{padding:44px 0;border-bottom:1px solid var(--line)}
+  section:last-child{border-bottom:none}
+  .sec-label{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal)}
+  section h2{font-weight:600;font-size:clamp(22px,3.5vw,30px);margin-top:10px}
+  section .lead{color:var(--fg-2);font-size:16px;margin-top:12px;max-width:620px}
+
+  .swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-top:28px}
+  .swatch{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .swatch .chip{height:88px}
+  .swatch .body{padding:14px 16px}
+  .swatch .name{font-family:var(--display);font-weight:600;font-size:15px;color:var(--fg)}
+  .swatch .use{font-size:13px;color:var(--fg-2);margin-top:4px;line-height:1.45}
+  .swatch .hex{font-family:var(--mono);font-size:11.5px;color:var(--fg-3);margin-top:8px;text-transform:uppercase;letter-spacing:0.06em}
+
+  .fonts{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px}
+  .fontcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+  .fontcard .role{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal-bright)}
+  .fontcard .specimen{font-size:44px;line-height:1.05;margin-top:12px;color:var(--fg)}
+  .fontcard .fname{font-family:var(--display);font-weight:600;font-size:16px;margin-top:16px;color:var(--fg)}
+  .fontcard .fuse{font-size:14px;color:var(--fg-2);margin-top:4px}
+
+  .btns{display:flex;flex-wrap:wrap;gap:14px;margin-top:28px}
+  .btn{font-family:var(--display);font-weight:600;font-size:15px;padding:13px 24px;border-radius:999px;display:inline-flex;align-items:center;gap:8px}
+  .btn-primary{background:var(--teal);color:var(--bg)}
+  .btn-secondary{background:transparent;color:var(--fg);border:1px solid var(--line-2)}
+  .btn-note{font-size:14px;color:var(--fg-2);margin-top:16px}
+
+  .blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:28px}
+  .block{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
+  .block h3{font-size:16px;color:var(--fg)}
+  .block p{font-size:14px;color:var(--fg-2);margin-top:6px;line-height:1.5}
+
+  .rules{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px}
+  .rule{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px}
+  .rule h3{font-size:15px;letter-spacing:0.02em}
+  .rule.do h3{color:var(--ok)}
+  .rule.dont h3{color:var(--no)}
+  .rule ul{margin:14px 0 0;padding-left:18px;color:var(--fg-2);font-size:14.5px;line-height:1.7}
+
+  footer{border-top:1px solid var(--line);color:var(--fg-3);font-size:13px}
+  footer .inner{max-width:var(--page-max);margin:0 auto;padding:28px var(--px)}
+
+  @media (max-width:640px){
+    .fonts,.rules{grid-template-columns:1fr}
+    .fontcard .specimen{font-size:36px}
+  }
+</style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="../index.html" class="logo">Yoh<span>Dev</span></a>
+      <span class="site-header__tag">Brand Basics</span>
+      <a href="Brand-Books.html" class="site-header__link">← All brand books</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero__inner">
+      <p class="eyebrow">Brand Basics · For marketing &amp; owners</p>
+      <h1>Our look, <em>on one page.</em></h1>
+      <p>A quick, plain-language reference for anyone creating YohDev marketing — the colors, the two fonts, the buttons, and a short list of do's and don'ts. No code required.</p>
+    </div>
+  </div>
+
+  <main>
+
+    <section>
+      <p class="sec-label">01 · Colors</p>
+      <h2>The YohDev palette</h2>
+      <p class="lead">Teal on near-black is the signature look. Keep backgrounds dark, text bright, and use teal to draw the eye — never for large blocks of text.</p>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#00B4B4"></div><div class="body"><div class="name">Signature Teal</div><div class="use">Buttons, links, and highlights.</div><div class="hex">#00B4B4</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#2DE0E0"></div><div class="body"><div class="name">Bright Teal</div><div class="use">Emphasis and hover on dark.</div><div class="hex">#2DE0E0</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#05080A;border-bottom:1px solid var(--line)"></div><div class="body"><div class="name">Near-Black</div><div class="use">The canvas — almost every background.</div><div class="hex">#05080A</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#0D1114;border-bottom:1px solid var(--line)"></div><div class="body"><div class="name">Slate Surface</div><div class="use">Cards and panels, one step up.</div><div class="hex">#0D1114</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#F5F7F7"></div><div class="body"><div class="name">Off-White</div><div class="use">Headlines and body text on dark.</div><div class="hex">#F5F7F7</div></div></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="sec-label">02 · Type</p>
+      <h2>Two typefaces, always</h2>
+      <p class="lead">Headlines in Poppins. Everything else in Roboto. That's the whole rule — don't introduce a third font.</p>
+      <div class="fonts">
+        <div class="fontcard">
+          <div class="role">Headlines</div>
+          <div class="specimen" style="font-family:var(--display);font-weight:600">Aa</div>
+          <div class="fname">Poppins · Semibold</div>
+          <div class="fuse">Page titles, section headings, big statements.</div>
+        </div>
+        <div class="fontcard">
+          <div class="role">Body &amp; UI</div>
+          <div class="specimen" style="font-family:var(--body);font-weight:400">Aa</div>
+          <div class="fname">Roboto · Regular</div>
+          <div class="fuse">Paragraphs, labels, buttons, everything else.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <p class="sec-label">03 · Buttons</p>
+      <h2>Buttons</h2>
+      <p class="lead">One filled teal button for the main action; one outlined button for the secondary. Both are fully rounded.</p>
+      <div class="btns">
+        <span class="btn btn-primary">Start a project →</span>
+        <span class="btn btn-secondary">See our work</span>
+      </div>
+      <p class="btn-note">Use the filled teal button once per screen — it's the single most important action. Everything else is the outlined style.</p>
+    </section>
+
+    <section>
+      <p class="sec-label">04 · Building blocks</p>
+      <h2>What a YohDev page is made of</h2>
+      <p class="lead">Most pages are the same handful of blocks, stacked. If you can name the block, you can brief it.</p>
+      <div class="blocks">
+        <div class="block"><h3>Header</h3><p>Logo left, a few links, one teal button. Collapses to a menu on phones.</p></div>
+        <div class="block"><h3>Hero</h3><p>A short, bold headline, one sentence of support, and the main button.</p></div>
+        <div class="block"><h3>Content sections</h3><p>A label, a heading, and either text, a list, or a row of cards.</p></div>
+        <div class="block"><h3>Cards</h3><p>Small dark panels with a title and a line or two — used in rows.</p></div>
+        <div class="block"><h3>Call to action</h3><p>A centered prompt near the bottom that repeats the main button.</p></div>
+        <div class="block"><h3>Footer</h3><p>Logo, a copyright line, and a short row of links on a black band.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="sec-label">05 · Rules of thumb</p>
+      <h2>A few simple rules</h2>
+      <div class="rules">
+        <div class="rule do">
+          <h3>✓ Do</h3>
+          <ul>
+            <li>Keep backgrounds dark and text bright.</li>
+            <li>Use teal to highlight one thing at a time.</li>
+            <li>Give headlines room to breathe.</li>
+            <li>Write short, plain, confident sentences.</li>
+          </ul>
+        </div>
+        <div class="rule dont">
+          <h3>✕ Don't</h3>
+          <ul>
+            <li>Put teal text on a light background.</li>
+            <li>Add a third font or a new color.</li>
+            <li>Crowd two filled buttons together.</li>
+            <li>Use tiny, low-contrast grey text.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="inner">© 2026 YohDev · Brand Basics — the one-pager. For the full story, see the <a href="Brand-Books.html">Brand Books</a>.</div>
+  </footer>
+
+</body>
+</html>

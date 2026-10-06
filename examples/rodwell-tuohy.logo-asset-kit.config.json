@@ -1,0 +1,74 @@
+{
+  "name": "Solas Women's Health",
+  "shortName": "Solas",
+  "direction": "Radiance direction",
+  "version": "v1",
+  "filePrefix": "solas",
+
+  "mark": { "from": "logo-selection-b.html", "ariaLabel": "The Solas Radiance mark" },
+  "expectedSourceFills": ["#C05A67"],
+
+  "wordmark": { "text": "SOLAS", "font": "logo-selection-assets/fonts/0QIvMX1D_JOuMwr7Iw.woff2",
+                "weight": 400, "tracking": 0.30, "size": 40, "capRatio": 0.70 },
+  "subline":  { "text": "WOMEN’S HEALTH", "font": "logo-selection-assets/fonts/ieVn2YZDLWuGJpnzaiwFXS9tYtpd59A.woff2",
+                "weight": 800, "tracking": 0.24, "size": 8.5, "capRatio": 0.72 },
+
+  "colors": { "coral": "#FD948D", "deep": "#A63C46", "ink": "#221C19",
+              "muted": "#6B5E56", "peach": "#FFD9D6", "cream": "#FFF8F7", "anchor": "#221C19" },
+  "iconBackground": "#A63C46",
+  "faviconMark": "deep",
+  "smallSizeColourway": "primary-deep",
+
+  "lockups": {
+    "primary":         { "mark": "#FD948D", "wordmark": "#221C19", "subline": "#6B5E56",
+                         "note": "the logo. Coral mark, ink wordmark. Cream, white or light photography." },
+    "primary-deep":    { "mark": "#A63C46", "wordmark": "#221C19", "subline": "#6B5E56",
+                         "note": "same structure, deep rose mark. Use below 160px or on a busy background." },
+    "reversed":        { "mark": "#FD948D", "wordmark": "#FFFFFF", "subline": "#FFD9D6", "onDark": true,
+                         "note": "dark backgrounds. Coral mark kept, wordmark white, subline peach." },
+    "onecolour-ink":   { "mark": "#221C19", "wordmark": "#221C19", "subline": "#221C19",
+                         "note": "single-ink printing, stamps, engraving, fax." },
+    "onecolour-white": { "mark": "#FFFFFF", "wordmark": "#FFFFFF", "subline": "#FFFFFF", "onDark": true,
+                         "note": "single-colour reverse where coral cannot be used." }
+  },
+  "markColours":     { "primary": "#FD948D", "deep": "#A63C46", "ink": "#221C19", "white": "#FFFFFF" },
+  "wordmarkColours": { "ink": "#221C19", "white": "#FFFFFF" },
+
+  "palette": [
+    { "name": "Coral (primary)", "hex": "#FD948D", "use": "The mark. Brand signature, fills, large fields." },
+    { "name": "Deep rose",       "hex": "#A63C46", "use": "The mark at small sizes; buttons and links." },
+    { "name": "Deepest rose",    "hex": "#8E2F3B", "use": "Anchor / hover state." },
+    { "name": "Blush",           "hex": "#FFC0BB", "use": "Tint." },
+    { "name": "Peach",           "hex": "#FFD9D6", "use": "Tint; subline when reversed." },
+    { "name": "Peach soft",      "hex": "#FFF0EE", "use": "Tint / panel." },
+    { "name": "Cream",           "hex": "#FFF8F7", "use": "Page background." },
+    { "name": "Ink",             "hex": "#221C19", "use": "The wordmark. Primary text." },
+    { "name": "Muted",           "hex": "#6B5E56", "use": "The subline. Tertiary text." }
+  ],
+
+  "clearSpace": "Keep free space around the logo equal to the diameter of the centre dot in the mark on every side.",
+  "minSizes": {
+    "Horizontal lockup": { "screen": "160px wide", "print": "1.25in / 32mm wide" },
+    "Stacked lockup":    { "screen": "120px wide", "print": "1in / 25mm wide" },
+    "Mark alone":        { "screen": "24px",       "print": "0.25in / 6mm" }
+  },
+  "minSizeNote": "Below the stacked minimum, drop the subline and use mark + wordmark. Below the mark minimum, use the mark alone — never shrink the full lockup further.",
+
+  "do": ["Place the supplied artwork; scale proportionally",
+         "Switch to primary-deep whenever the logo gets small",
+         "Use reversed on dark or photographic fields",
+         "Give the logo more room than you think it needs"],
+  "dont": ["Retype the wordmark — always place the artwork",
+           "Make the wordmark coral, or the mark ink",
+           "Recolour, add gradients, shadows, outlines or effects",
+           "Stretch, rotate, skew or rearrange the lockup",
+           "Use the coral mark on white below 160px"],
+
+  "fonts": [
+    { "file": "logo-selection-assets/fonts/0QIvMX1D_JOuMwr7Iw.woff2", "as": "Lora-Regular.woff2",
+      "note": "the SOLAS wordmark and all display/headings. Regular (400)." },
+    { "file": "logo-selection-assets/fonts/ieVn2YZDLWuGJpnzaiwFXS9tYtpd59A.woff2", "as": "HankenGrotesk-Variable.woff2",
+      "note": "the WOMEN'S HEALTH subline and all body copy. Subline is 800." }
+  ],
+  "fontLicence": "Both are Google Fonts under the SIL Open Font License 1.1: free for commercial\nuse, embedding, web and print, no fee and no attribution required on artwork.\nFull licence: https://openfontlicense.org"
+}

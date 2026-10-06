@@ -1,0 +1,144 @@
+/* ==========================================================================
+   TripOS design system: tokens + shared components
+   Concept: the departures board. Every booking, plan and change for a trip
+   on one board, with the problems already handled.
+   Source of truth for the landing page, the style guide and every brochure.
+   ========================================================================== */
+
+@font-face{font-family:"Bricolage Grotesque";src:url("../fonts/bricolage-grotesque.woff2") format("woff2");font-weight:200 800;font-stretch:75% 100%;font-display:swap}
+@font-face{font-family:"Figtree";src:url("../fonts/figtree.woff2") format("woff2");font-weight:300 900;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url("../fonts/jetbrains-mono-500.woff2") format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url("../fonts/jetbrains-mono-700.woff2") format("woff2");font-weight:700;font-display:swap}
+
+:root{
+  /* Surfaces. Neutrals are named after the board and the paper ticket. */
+  --board:#101218;      /* the departures board, the one dark surface */
+  --board-2:#1A1D25;    /* a board row */
+  --board-3:#252934;    /* a flap tile */
+  --paper:#F7F4EC;      /* ticket stock, the main light surface */
+  --paper-2:#EDE7D8;    /* stub, alternate light surface */
+
+  /* Text */
+  --ink:#14161C;        /* text on paper and on flap */
+  --ink-2:#4B4E58;      /* muted text on paper (7.6:1) */
+  --chalk:#F4F1E8;      /* text on board */
+  --chalk-2:#B4B1A8;    /* muted text on board (8.7:1) */
+
+  /* Accent: departure-board yellow. One accent, used scarcely. */
+  --flap:#FFD23F;       /* surface, or text on board only. Never text on paper. */
+  --flap-line:#735600;  /* yellow companion for lines and text on paper (6.2:1) */
+
+  /* Board status colors. Only inside the board component. */
+  --go:#6EE7A0;         /* on time / sorted (on a board row 10.9:1) */
+  --alert:#FF7A66;      /* delayed / cancelled (on a board row 6.6:1) */
+
+  /* Lines */
+  --line-paper:rgba(20,22,28,.14);
+  --line-board:rgba(244,241,232,.12);
+
+  /* Type roles. Bricolage says it. Figtree explains it. Mono labels it. */
+  --display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+
+  /* Scale: extreme contrast, missing middle */
+  --t-hero:clamp(56px,10.5vw,168px);
+  --t-h2:clamp(40px,6.2vw,96px);
+  --t-statement:clamp(28px,3.4vw,50px);
+  --t-body:18px;
+  --t-small:15px;
+  --t-label:12px;
+
+  /* Layout */
+  --container:1240px;
+  --gutter:clamp(20px,4.5vw,56px);
+  --header-h:68px;
+  --r:6px;              /* the only radius */
+
+  /* Motion: kinetic register, one curve for travel, one for the flap */
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-flap:cubic-bezier(.77,0,.18,1);
+  --t-ui:.28s;
+  --t-reveal:1.1s;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--header-h) + 12px);-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--body);font-size:var(--t-body);line-height:1.6;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img,svg{display:block;max-width:100%}
+h1,h2,h3,p,ol,ul,dl,dd,figure{margin:0}
+ol,ul{padding:0;list-style:none}
+a{color:inherit}
+.container{max-width:var(--container);margin:0 auto;padding:0 var(--gutter)}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Focus: always visible, yellow on board, ink on paper */
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:2px}
+.on-board :focus-visible,.board :focus-visible{outline-color:var(--flap)}
+
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--flap);color:var(--ink);font:700 14px/1 var(--mono);padding:14px 16px;border-radius:var(--r);text-decoration:none;transition:top var(--t-ui) var(--ease)}
+.skip:focus{top:12px}
+
+/* ---------- Type roles ---------- */
+.display{font-family:var(--display);font-weight:800;font-stretch:84%;font-variation-settings:"opsz" 96;letter-spacing:-.028em;line-height:.88}
+.label{font-family:var(--mono);font-weight:700;font-size:var(--t-label);letter-spacing:.16em;text-transform:uppercase;line-height:1.3}
+.lede{font-size:clamp(19px,1.5vw,22px);line-height:1.55;max-width:46ch}
+
+/* ---------- Wordmark: Trip + an OS flap tile ---------- */
+.wordmark{display:inline-flex;align-items:center;gap:.08em;font-family:var(--display);font-weight:800;font-stretch:84%;letter-spacing:-.025em;font-size:28px;line-height:1;text-decoration:none;color:inherit}
+.wordmark__tile{display:inline-grid;place-items:center;background:var(--flap);color:var(--ink);padding:.12em .16em .1em;border-radius:4px;font-family:var(--mono);font-weight:700;font-size:.62em;letter-spacing:.04em;position:relative;overflow:hidden}
+.wordmark__tile::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(20,22,28,.35)}
+
+/* ---------- Buttons: one primary per view ---------- */
+.btn{display:inline-flex;align-items:center;gap:.6em;font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:16px 22px;border-radius:var(--r);border:2px solid transparent;cursor:pointer;transition:transform var(--t-ui) var(--ease),background-color var(--t-ui) var(--ease),color var(--t-ui) var(--ease)}
+.btn__arrow{display:inline-block;transition:transform var(--t-ui) var(--ease)}
+.btn:hover .btn__arrow{transform:translateX(4px)}
+.btn--flap{background:var(--flap);color:var(--ink)}
+.btn--flap:hover{transform:translateY(-2px)}
+.btn--ink{background:var(--ink);color:var(--paper)}
+.btn--ink:hover{transform:translateY(-2px)}
+.btn--ghost{border-color:currentColor;background:transparent}
+.btn--ghost:hover{background:currentColor}
+.btn--ghost:hover span{color:var(--paper)}
+.on-board .btn--ghost:hover span{color:var(--ink)}
+
+/* ---------- The board (signature device) ---------- */
+.board{background:var(--board);color:var(--chalk);border-radius:var(--r);padding:clamp(16px,2vw,24px);font-family:var(--mono);box-shadow:inset 0 0 0 1px var(--line-board)}
+.board__head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:0 4px 14px;border-bottom:1px solid var(--line-board);flex-wrap:wrap}
+.board__title{font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--flap)}
+.board__clock{font-weight:500;font-size:13px;letter-spacing:.1em;color:var(--chalk-2);font-variant-numeric:tabular-nums}
+.board__table{width:100%;border-collapse:separate;border-spacing:0 6px;margin-top:8px;font-size:14px}
+.board__table th{font-weight:500;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--chalk-2);text-align:left;padding:6px 10px 2px}
+.board__table td{background:var(--board-2);padding:11px 10px;vertical-align:middle;font-variant-numeric:tabular-nums}
+.board__table td:first-child{border-radius:4px 0 0 4px}
+.board__table td:last-child{border-radius:0 4px 4px 0}
+.board__time{font-weight:700;color:var(--chalk);white-space:nowrap}
+.board__what{font-weight:700;color:var(--chalk)}
+.board__src{color:var(--chalk-2);font-weight:500}
+.status{display:inline-block;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.status--go{color:var(--go)}
+.status--flap{color:var(--flap)}
+.status--alert{color:var(--alert)}
+
+/* Split-flap characters. Hidden states exist only under .motion */
+.flap-word{display:inline-block;white-space:nowrap}
+.flap-ch{display:inline-block}
+.motion .flapping .flap-ch{animation:flap .5s var(--ease-flap) both;animation-delay:calc(var(--i,0) * 22ms + var(--row,0) * 140ms)}
+@keyframes flap{0%{transform:rotateX(90deg);opacity:0}60%{transform:rotateX(-12deg);opacity:1}100%{transform:none;opacity:1}}
+
+/* ---------- Ledger: numbered key/value rows on hairlines ---------- */
+.ledger{border-top:1px solid var(--line-paper)}
+.ledger__row{display:grid;grid-template-columns:5ch minmax(0,1fr);gap:16px;padding:18px 0;border-bottom:1px solid var(--line-paper);align-items:baseline}
+.ledger__n{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--flap-line);font-variant-numeric:tabular-nums}
+.ledger__text{font-size:19px;line-height:1.45}
+.on-board .ledger{border-top-color:var(--line-board)}
+.on-board .ledger__row{border-bottom-color:var(--line-board)}
+.on-board .ledger__n{color:var(--flap)}
+
+/* ---------- Reveals (JS-gated) ---------- */
+.motion [data-reveal]{opacity:0;transform:translateY(28px);transition:opacity var(--t-reveal) var(--ease),transform var(--t-reveal) var(--ease);transition-delay:calc(var(--d,0) * 90ms)}
+.motion [data-reveal].in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}

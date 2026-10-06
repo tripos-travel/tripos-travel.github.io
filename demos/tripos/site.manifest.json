@@ -1,0 +1,11 @@
+{
+  "brand": "tripos",
+  "hub": "index.html",
+  "outputDir": "output",
+  "pages": [
+    { "file": "Landing-Page.html",    "role": "homepage",    "title": "Landing Page" },
+    { "file": "Sample-Brochure.html", "role": "other",       "title": "Sample Brochure" },
+    { "file": "Style-Guide.html",     "role": "style-guide", "title": "Design System" }
+  ],
+  "components": { "home": "Style-Guide.html" }
+}

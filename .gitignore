@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.log
+
+# State files
+.yohdev-state.json
+*.tmp
+
+# Client data (keep these local)
+Sales Handoff — */
+output/
+client-data/
+
+# Exception: demo outputs are curated examples, not real client work — track them
+!demos/*/output/
+!demos/*/output/**
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+
+# Surge
+.surge
+
+# Archive
+.archive/
+# Local test inputs (design renders, .fig exports) — never committed
+_test/
+.claude/settings.local.json
+# Logo-selection build scratch (the woff2 files it produces ARE committed,
+# under demos/<brand>/logo-selection-assets/fonts/)
+scripts/logo-selection/.fontcache/
+scripts/logo-selection/marks-contact-sheet.html
+
+# logo-asset-kit build output — reproducible from logo-asset-kit.config.json
+demos/*/logo-asset-kit/
+
+# Local upload bundles
+_upload-tmp.tgz

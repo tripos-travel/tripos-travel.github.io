@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yohdev.github.io/yd-website-playbook/automation/legacy-cluster-routine/payload.schema.json",
+  "title": "Legacy Cluster Routine Payload",
+  "description": "Injection contract for the headless legacy-cluster routine. Describes exactly ONE pillar cluster (one hub + its explicit spokes) to rebuild into an existing brand's design system. One cluster per run — multiple clusters are rejected.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["brand", "hub", "spokes"],
+  "properties": {
+    "brand": {
+      "type": "string",
+      "description": "The existing brand/design system to match. Must resolve to a demos/<brand>/ folder in the repo.",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "examples": ["your-brand"]
+    },
+    "clusterName": {
+      "type": "string",
+      "description": "Short slug used for the hub filename (<clusterName>.html), spoke filenames (<clusterName>-<spoke>.html), and provenance artifacts. Derived from the hub if omitted.",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "examples": ["products", "services"]
+    },
+    "hub": {
+      "type": "string",
+      "format": "uri",
+      "description": "Exactly one hub/pillar page URL to rebuild.",
+      "pattern": "^https?://"
+    },
+    "spokes": {
+      "type": "array",
+      "description": "Explicit list of spoke page URLs. No crawling/auto-discovery. Must contain at least one spoke (a cluster is a hub plus spokes; for a lone page use the legacy-page-rebuild skill instead).",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "pattern": "^https?://"
+      }
+    }
+  },
+  "$comment": "One cluster per run. The payload is a single object, NOT an array. A top-level array (multiple clusters/hubs) must be rejected by the routine before any build work."
+}

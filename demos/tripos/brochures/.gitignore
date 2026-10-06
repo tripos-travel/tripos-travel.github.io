@@ -1,0 +1,4 @@
+# Real students' brochures and answers stay on your computer, never on the public site.
+out/
+data/*
+!data/sample-*.json

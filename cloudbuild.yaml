@@ -1,0 +1,77 @@
+steps:
+  # Cloud Build's ambient credentials cannot mint an OIDC identity token
+  # directly, and a plain metadata-server call cannot either:
+  #
+  # 1. `gcloud auth print-identity-token --audiences=...` (no impersonation)
+  #    failed against the real trigger with "No identity token can be
+  #    obtained from the current credentials."
+  # 2. A direct call to
+  #    computeMetadata/v1/instance/service-accounts/default/identity
+  #    failed with curl exit 22 (HTTP >=400) -- because Cloud Build's
+  #    metadata server, unlike a real GCE VM's, does not implement the
+  #    `/identity` endpoint at all. It only proxies `/token` and `/email`.
+  #    Confirmed against https://blog.salrashid.dev/articles/2022/cloud_build_id_token/
+  #    ("Cloud Build's metadata server ... does not include the /identity
+  #    endpoint needed for id_token generation") and against the GCE-only
+  #    scope of that endpoint per
+  #    https://cloud.google.com/compute/docs/instances/verifying-instance-identity.
+  #
+  # The documented, working fix -- per Cloud Build's own doc,
+  # https://cloud.google.com/build/docs/securing-builds/authorize-service-to-service-access
+  # ("Authorize service-to-service access") -- is self-impersonation: ask
+  # `gcloud auth print-identity-token` to impersonate the build's own
+  # service account. That routes the request through the IAM Credentials
+  # API's generateIdToken instead of the local metadata/credential helper,
+  # which does support minting id_tokens.
+  #
+  # Validated 2026-08-20 on the real skill-packaging trigger (build
+  # 96854212, tag v0.0.2-validate): the mechanism itself works --
+  # SA_EMAIL resolves correctly and gcloud confirms "This command is
+  # using service account impersonation. All API calls will be executed
+  # as [skill-packaging-trigger@yd-playbook.iam.gserviceaccount.com]" --
+  # but it is PERMISSION_DENIED on `iam.serviceAccounts.getAccessToken`,
+  # which belongs to `roles/iam.serviceAccountTokenCreator`. (gcloud's
+  # impersonated-credentials refresh checks getAccessToken even when the
+  # final call is print-identity-token, so the narrower
+  # serviceAccountOpenIdTokenCreator role the Cloud Build docs mention is
+  # not sufficient for this code path -- this is real-error-verified,
+  # not doc-inferred.) That role is NOT currently granted --
+  # skill-packaging-trigger@yd-playbook.iam.gserviceaccount.com only has
+  # roles/developerconnect.readTokenAccessor, roles/logging.logWriter,
+  # and secretmanager.secretAccessor on one secret -- so this step will
+  # keep failing until a human binds
+  # roles/iam.serviceAccountTokenCreator to that SA on itself via
+  # Terraform. Not attempting that grant here.
+  - id: "fetch-publish-token"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        set -euo pipefail
+        SA_EMAIL="$$(gcloud config get-value account)"
+        # --include-email is required, not optional: without it the minted
+        # ID token carries no `email` claim at all, and the publish route
+        # authorizes by comparing that claim to the expected service
+        # account. Confirmed live 2026-08-20 — two builds rejected with
+        # "token carries no email claim" / "no verified email claim" before
+        # this flag was added.
+        gcloud auth print-identity-token \
+          --impersonate-service-account="$$SA_EMAIL" \
+          --audiences="${_PUBLISH_URL}" \
+          --include-email \
+          > /workspace/publish-token.txt
+        test -s /workspace/publish-token.txt
+
+  - id: "package-and-publish"
+    name: "node:20"
+    entrypoint: "node"
+    args:
+      - "scripts/package-and-publish-skill.mjs"
+    env:
+      - "PUBLISH_URL=${_PUBLISH_URL}"
+      - "PUBLISH_TOKEN_FILE=/workspace/publish-token.txt"
+      - "COMMIT_SHA=${COMMIT_SHA}"
+
+options:
+  logging: CLOUD_LOGGING_ONLY

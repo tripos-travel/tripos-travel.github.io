@@ -1,0 +1,63 @@
+{
+  "sample": true,
+  "slug": "sample-london",
+  "preparedOn": "Mon 9 Nov 2026",
+  "traveler": { "firstName": "Alex" },
+  "trip": {
+    "name": "Long weekend in London",
+    "from": "Florence",
+    "to": "London",
+    "dates": "Fri 13 to Mon 16 Nov 2026",
+    "crew": ["Alex", "Sam", "Priya"]
+  },
+  "answers": {
+    "storedIn": "Gmail, the airline app, Hostelworld and our group chat",
+    "lastTrip": "In Paris the platform changed and nobody saw it, so we missed our train.",
+    "worry": "Our flight home on Monday gets cancelled and I miss class."
+  },
+  "board": [
+    { "day": "FRI", "time": "06:10", "what": "Train to Pisa airport", "src": "Gmail", "status": "Booked", "kind": "go" },
+    { "day": "FRI", "time": "09:55", "what": "Flight to London Gatwick", "src": "airline app", "status": "Checked in", "kind": "go" },
+    { "day": "FRI", "time": "13:30", "what": "Train into London", "src": "nothing to book", "status": "Tap your card", "kind": "flap" },
+    { "day": "FRI", "time": "15:00", "what": "Hostel check-in", "src": "Hostelworld", "status": "Paid", "kind": "go" },
+    { "day": "SAT", "time": "11:00", "what": "Borough Market, then the South Bank", "src": "group chat", "status": "Free", "kind": "go" },
+    { "day": "SAT", "time": "19:30", "what": "West End show", "src": "Sam's email", "status": "2 of 3 paid", "kind": "alert" },
+    { "day": "SUN", "time": "10:00", "what": "British Museum", "src": "group chat", "status": "Free", "kind": "go" },
+    { "day": "MON", "time": "07:05", "what": "Flight home", "src": "airline app", "status": "Check in Sun", "kind": "flap" }
+  ],
+  "boardNote": "Yellow means it needs one thing from you. Red means someone in the group still owes for it.",
+  "planB": {
+    "title": "If your flight home is cancelled.",
+    "steps": [
+      { "title": "Rebook while you queue.", "text": "Get in line at the airline desk and open the airline app at the same time. Take whichever gets you a new flight first." },
+      { "title": "Ask for your options by name.", "text": "Your flight leaves the UK, so UK261 rules apply: the airline has to offer a refund or a replacement flight, plus food and a hotel if you're stuck overnight." },
+      { "title": "Keep the proof.", "text": "Screenshot the cancellation message and keep every receipt for food and transport." },
+      { "title": "Tell your program early.", "text": "Message your study abroad coordinator before class starts. One line is enough: flight cancelled, rebooked for this time, screenshot attached." },
+      { "title": "One person updates the group.", "text": "Put the new times on the board so the group chat doesn't end up with three versions of the plan." }
+    ]
+  },
+  "lastTripFix": "Platforms change on the station board, not on your ticket. On travel days one person is the board-checker: look 15 minutes before departure and again at 5.",
+  "essentials": [
+    { "k": "Emergency", "v": "999 or 112 for police, fire and ambulance." },
+    { "k": "Not urgent", "v": "111 for NHS medical advice." },
+    { "k": "Getting in", "v": "US citizens need an approved UK ETA before they fly. Apply on the UK ETA app, and allow a few days." },
+    { "k": "Getting around", "v": "Tap a contactless card or phone in and out on the Tube, buses and trains from Gatwick. Fares cap daily. Everyone needs their own card or phone, and the same one in and out." },
+    { "k": "Money", "v": "Pounds sterling (GBP). Cards and phone payments work almost everywhere." },
+    { "k": "Plugs", "v": "Type G, 230V. Bring a UK adapter." },
+    { "k": "US Embassy", "v": "33 Nine Elms Lane, London SW11 7US." }
+  ],
+  "checklist": [
+    "Passport, plus any residence permit you need to get back into Italy",
+    "UK ETA approved",
+    "Your own contactless card or phone wallet",
+    "UK plug adapter",
+    "Show tickets: Priya pays Sam back",
+    "Flight home: check in on Sunday"
+  ],
+  "contact": "Reply to the email this came in. A real person reads it.",
+  "sources": [
+    { "label": "UK Civil Aviation Authority: delays and cancellations", "url": "https://www.caa.co.uk/passengers-and-public/your-rights-as-a-passenger/delays-and-cancellations/" },
+    { "label": "TfL: contactless and mobile pay as you go", "url": "https://tfl.gov.uk/fares/how-to-pay-and-where-to-buy-tickets-and-oyster/pay-as-you-go/contactless-and-mobile-pay-as-you-go" },
+    { "label": "GOV.UK: Electronic Travel Authorisation", "url": "https://www.gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta" }
+  ]
+}

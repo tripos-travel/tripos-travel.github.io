@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>YohDev — The development partner you don't have to manage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  :root{
+    --bg: #05080A;           /* near-black with a cool cast */
+    --bg-2: #0A0E11;
+    --bg-3: #0F1417;
+    --surface: #0D1114;
+    --surface-2: #121719;
+    --line: rgba(255,255,255,0.08);
+    --line-2: rgba(255,255,255,0.14);
+    --fg: #F5F7F7;
+    --fg-2: rgba(245,247,247,0.72);
+    --fg-3: rgba(245,247,247,0.52);
+    --teal: #00B4B4;
+    --teal-bright: #2DE0E0;
+    --teal-deep: #009494;
+    --teal-dim: rgba(0,180,180,0.18);
+    --teal-glow: rgba(0,180,180,0.35);
+    --black: #000000;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg)}
+  body{font-family:"Roboto",sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  h1,h2,h3,h4{font-family:"Poppins",sans-serif;font-weight:600;letter-spacing:-0.025em;margin:0;color:var(--fg)}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+  .container{max-width:1240px;margin:0 auto;padding:0 40px}
+  .eyebrow{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal);font-weight:500}
+  @media (max-width:720px){ .container{padding:0 22px} }
+
+  /* --- Nav: desktop links vs. mobile hamburger + right flyout --- */
+  .nav-desktop{display:flex; align-items:center}
+  .nav-burger{display:none; flex-direction:column; justify-content:center; gap:5px; width:44px; height:44px; padding:0 11px; background:rgba(10,14,17,0.4); border:1px solid var(--line-2); border-radius:10px; cursor:pointer}
+  .nav-burger span{display:block; height:2px; width:100%; background:var(--fg); border-radius:2px}
+  .nav-backdrop{position:fixed; inset:0; background:rgba(5,8,10,0.6); -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px); opacity:0; visibility:hidden; transition:opacity .25s ease; z-index:40}
+  .nav-backdrop.is-open{opacity:1; visibility:visible}
+  .nav-drawer{position:fixed; top:0; right:0; height:100dvh; width:min(86vw,360px); background:var(--bg-2); border-left:1px solid var(--line-2); box-shadow:-30px 0 60px -20px rgba(0,0,0,.7); transform:translateX(100%); transition:transform .3s ease; z-index:50; display:flex; flex-direction:column; padding:22px}
+  .nav-drawer.is-open{transform:translateX(0)}
+  .nav-drawer__head{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px}
+  .nav-drawer__label{font-family:"JetBrains Mono",monospace; font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--teal)}
+  .nav-drawer__close{background:transparent; border:1px solid var(--line-2); border-radius:8px; width:38px; height:38px; color:var(--fg); font-size:22px; line-height:1; cursor:pointer}
+  .nav-drawer__links{display:flex; flex-direction:column; gap:2px}
+  .nav-drawer__links a{font-family:"Poppins",sans-serif; font-size:17px; font-weight:500; color:var(--fg); padding:14px 8px; border-bottom:1px solid var(--line)}
+  .nav-drawer__cta{margin-top:auto; background:var(--teal); color:var(--bg); font-family:"Poppins",sans-serif; font-weight:600; font-size:15px; padding:14px 18px; border-radius:999px; text-align:center}
+  @media (max-width:860px){
+    .nav-desktop{display:none !important}
+    .nav-burger{display:flex}
+  }
+
+  /* --- Responsive section grids --- */
+  .process-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px; max-width:1080px; margin:0 auto}
+  @media (max-width:860px){ .process-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:560px){ .process-grid{grid-template-columns:1fr} .ann-right{display:none} }
+  .svc-detail{display:grid; grid-template-columns:160px 1fr; gap:28px; align-items:start; padding-left:4px; padding-right:60px}
+  @media (max-width:560px){ .svc-detail{grid-template-columns:1fr; gap:8px; padding-right:0} }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="env,react">
+    const { useState, useEffect } = React;
+
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "heroArt": "faceted",
+      "accent": "teal",
+      "headline": "The development partner you don't have to manage."
+    }/*EDITMODE-END*/;
+
+    /* ---------- Icons ---------- */
+    const S = ({children, size=20, w=1.6, style}) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={style}>{children}</svg>
+    );
+    const IconArrow = (p) => <S {...p}><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></S>;
+    const IconPlus = (p) => <S {...p}><path d="M12 5v14"/><path d="M5 12h14"/></S>;
+    const IconMinus = (p) => <S {...p}><path d="M5 12h14"/></S>;
+    const IconDot = () => <span style={{display:'inline-block',width:8,height:8,borderRadius:99,background:'var(--teal)',boxShadow:'0 0 0 3px rgba(0,180,180,.2)'}}/>;
+
+    /* ---------- Announcement + Nav ---------- */
+    const AnnouncementBar = () => (
+      <div style={{borderBottom:'1px solid var(--line)', background:'var(--bg)'}}>
+        <div className="container" style={{display:'flex', justifyContent:'space-between', alignItems:'center', height:38, fontSize:12.5, color:'var(--fg-2)', whiteSpace:'nowrap', overflow:'hidden'}}>
+          <div style={{display:'flex', gap:10, alignItems:'center', whiteSpace:'nowrap'}}>
+            <IconDot/>
+            <span style={{whiteSpace:'nowrap'}}>Accepting new retainers for Q2 — <a href="#contact" style={{color:'var(--teal-bright)', borderBottom:'1px solid var(--teal-dim)', paddingBottom:1}}>book an intro</a></span>
+          </div>
+          <div className="mono ann-right" style={{fontSize:11.5, color:'var(--fg-3)', whiteSpace:'nowrap'}}>
+            <span style={{color:'var(--teal)'}}>&gt;_</span>&nbsp;&nbsp;hello@yohdev.com
+          </div>
+        </div>
+      </div>
+    );
+
+    const Nav = () => {
+      const items = ['Services','Work','About','Process','Contact'];
+      const hrefs = ['#services','#','#','#','#contact'];
+      const [menuOpen, setMenuOpen] = useState(false);
+      const close = () => setMenuOpen(false);
+
+      useEffect(() => {
+        if (!menuOpen) return;
+        const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+        document.addEventListener('keydown', onKey);
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = prevOverflow; };
+      }, [menuOpen]);
+
+      return (
+        <header style={{background:'rgba(5,8,10,0.85)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', borderBottom:'1px solid var(--line)', position:'sticky', top:0, zIndex:30}}>
+          <div className="container" style={{display:'flex', alignItems:'center', justifyContent:'space-between', height:76}}>
+            <a href="#" style={{display:'flex', alignItems:'center', gap:8}}>
+              <span style={{fontFamily:'"Poppins",sans-serif', fontSize:22, fontWeight:700, color:'var(--fg)', letterSpacing:'-0.03em'}}>
+                Yoh<span style={{color:'var(--teal)'}}>Dev</span>
+              </span>
+              <span className="mono" style={{color:'var(--teal)', fontWeight:500, fontSize:18}}>.</span>
+            </a>
+            <nav className="nav-desktop" style={{gap:32}}>
+              {items.map((x,i) => (
+                <a key={x} href={hrefs[i]} style={{fontFamily:'"Poppins",sans-serif', fontSize:13.5, fontWeight:500, color: i===0 ? 'var(--fg)' : 'var(--fg-2)', letterSpacing:'0.01em', position:'relative', paddingBottom:4}}>
+                  {x}
+                  {i===0 && <span style={{position:'absolute', left:0, right:0, bottom:-2, height:2, background:'var(--teal)', borderRadius:2}}/>}
+                </a>
+              ))}
+            </nav>
+            <div className="nav-desktop" style={{gap:10}}>
+              <a href="#contact" style={{
+                fontFamily:'"Poppins",sans-serif', fontSize:13.5, fontWeight:500, color:'var(--bg)',
+                background:'var(--teal)', padding:'10px 18px', borderRadius:999,
+                display:'inline-flex', gap:8, alignItems:'center',
+                boxShadow:'0 0 0 1px rgba(0,180,180,.4), 0 10px 30px -10px rgba(0,180,180,.6)'
+              }}>
+                Start a project <IconArrow size={14}/>
+              </a>
+            </div>
+            <button
+              className="nav-burger"
+              aria-label="Open menu"
+              aria-controls="nav-drawer"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen(true)}>
+              <span/><span/><span/>
+            </button>
+          </div>
+
+          <div className={"nav-backdrop" + (menuOpen ? " is-open" : "")} onClick={close} aria-hidden="true"/>
+
+          <aside id="nav-drawer" className={"nav-drawer" + (menuOpen ? " is-open" : "")} aria-hidden={!menuOpen}>
+            <div className="nav-drawer__head">
+              <span className="nav-drawer__label">Menu</span>
+              <button className="nav-drawer__close" aria-label="Close menu" onClick={close}>&times;</button>
+            </div>
+            <nav className="nav-drawer__links">
+              {items.map((x,i) => (
+                <a key={x} href={hrefs[i]} onClick={close}>{x}</a>
+              ))}
+            </nav>
+            <a href="#contact" className="nav-drawer__cta" onClick={close}>Start a project</a>
+          </aside>
+        </header>
+      );
+    };
+
+    /* ---------- Hero art: faceted/polygonal geometric mesh ---------- */
+    const FacetedArt = () => {
+      // Low-poly triangulated shape with teal fills/strokes, loosely echoing the live site
+      const tris = [
+        {p:'200,80 520,160 380,360', o:0.22},
+        {p:'520,160 720,280 380,360', o:0.14},
+        {p:'720,280 900,200 1040,420', o:0.20},
+        {p:'900,200 1160,140 1040,420', o:0.10},
+        {p:'380,360 720,280 560,560', o:0.08},
+        {p:'720,280 1040,420 560,560', o:0.16},
+        {p:'1040,420 1260,520 820,680', o:0.10},
+        {p:'560,560 1040,420 820,680', o:0.22},
+        {p:'80,260 380,360 220,580', o:0.12},
+        {p:'380,360 560,560 220,580', o:0.18},
+        {p:'220,580 560,560 420,760', o:0.09},
+        {p:'560,560 820,680 420,760', o:0.14},
+        {p:'820,680 1260,520 1120,800', o:0.10},
+        {p:'820,680 1120,800 620,860', o:0.18},
+        {p:'620,860 420,760 280,900', o:0.11},
+      ];
+      return (
+        <svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" style={{position:'absolute', inset:0, width:'100%', height:'100%'}} aria-hidden="true">
+          <defs>
+            <radialGradient id="glow" cx="50%" cy="55%" r="60%">
+              <stop offset="0%" stopColor="#00B4B4" stopOpacity="0.35"/>
+              <stop offset="45%" stopColor="#00B4B4" stopOpacity="0.08"/>
+              <stop offset="100%" stopColor="#00B4B4" stopOpacity="0"/>
+            </radialGradient>
+            <linearGradient id="facetFill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#00B4B4"/>
+              <stop offset="100%" stopColor="#006E6E"/>
+            </linearGradient>
+          </defs>
+          {/* Ambient glow */}
+          <rect width="1400" height="900" fill="url(#glow)"/>
+          {/* Dot grid backdrop */}
+          {Array.from({length:20}).map((_,r)=>(
+            Array.from({length:30}).map((__,c)=>(
+              <circle key={r+'-'+c} cx={c*50+20} cy={r*50+20} r="0.8" fill="rgba(255,255,255,0.05)"/>
+            ))
+          ))}
+          {/* Facets */}
+          {tris.map((t,i) => (
+            <polygon key={i} points={t.p} fill="url(#facetFill)" fillOpacity={t.o} stroke="#2DE0E0" strokeOpacity="0.35" strokeWidth="0.75"/>
+          ))}
+          {/* Highlight edges */}
+          {tris.slice(0,6).map((t,i) => (
+            <polygon key={'h'+i} points={t.p} fill="none" stroke="#2DE0E0" strokeOpacity="0.55" strokeWidth="1"/>
+          ))}
+        </svg>
+      );
+    };
+
+    /* ---------- Hero ---------- */
+    const Hero = ({heroArt, headline}) => (
+      <section style={{position:'relative', overflow:'hidden', borderBottom:'1px solid var(--line)', background:'linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%)'}}>
+        {/* Art layer */}
+        <div style={{position:'absolute', inset:0, opacity: heroArt === 'faceted' ? 1 : 0.5}}>
+          <FacetedArt/>
+        </div>
+        {/* Vignette for readability */}
+        <div style={{position:'absolute', inset:0, background:'radial-gradient(ellipse at 50% 45%, rgba(5,8,10,0) 0%, rgba(5,8,10,0.45) 70%, rgba(5,8,10,0.85) 100%)'}}/>
+        {/* Bottom fade */}
+        <div style={{position:'absolute', left:0, right:0, bottom:0, height:180, background:'linear-gradient(180deg, rgba(5,8,10,0) 0%, var(--bg-2) 100%)'}}/>
+
+        <div className="container" style={{position:'relative', paddingTop:120, paddingBottom:140, textAlign:'center'}}>
+          <div style={{display:'inline-flex', gap:12, alignItems:'center', padding:'8px 18px', border:'1px solid var(--line-2)', borderRadius:999, background:'rgba(10,14,17,0.6)', backdropFilter:'blur(6px)', marginBottom:40, lineHeight:1, whiteSpace:'nowrap'}}>
+            <IconDot/>
+            <span className="mono" style={{fontSize:11.5, letterSpacing:'0.12em', color:'var(--fg-2)', textTransform:'uppercase', lineHeight:1}}>Remote-first · Est. 2019</span>
+          </div>
+
+          <h1 style={{fontSize:'clamp(44px, 6.5vw, 88px)', lineHeight:1.02, fontWeight:600, letterSpacing:'-0.035em', maxWidth:1040, margin:'0 auto', color:'var(--fg)'}}>
+            The <span style={{color:'var(--teal-bright)'}}>development partner</span><br/>
+            you don't have to <span style={{fontStyle:'italic', fontWeight:500}}>manage.</span>
+          </h1>
+
+          <p style={{fontSize:19, color:'var(--fg-2)', maxWidth:680, margin:'30px auto 0', lineHeight:1.55, fontFamily:'"Roboto",sans-serif'}}>
+            From websites and UX to web apps, AI readiness, and legacy modernization — YohDev plugs into your team as a senior engineering partner, not a queue you have to babysit.
+          </p>
+
+          <div style={{display:'flex', gap:14, marginTop:44, justifyContent:'center', flexWrap:'wrap'}}>
+            <a href="#contact" style={{
+              background:'var(--teal)', color:'var(--bg)',
+              padding:'15px 28px', borderRadius:999, fontWeight:600, fontSize:15,
+              fontFamily:'"Poppins",sans-serif', display:'inline-flex', gap:10, alignItems:'center',
+              boxShadow:'0 0 0 1px rgba(0,180,180,.45), 0 20px 50px -20px rgba(0,180,180,.7)'
+            }}>
+              Start a project <IconArrow size={16}/>
+            </a>
+            <a href="#services" style={{
+              padding:'15px 26px', borderRadius:999, fontWeight:500, fontSize:15,
+              color:'var(--fg)', border:'1px solid var(--line-2)', background:'rgba(10,14,17,0.4)',
+              fontFamily:'"Poppins",sans-serif', display:'inline-flex', gap:10, alignItems:'center'
+            }}>
+              See what we build
+            </a>
+          </div>
+        </div>
+      </section>
+    );
+
+    /* ---------- Services (accordion list) ---------- */
+    const Services = () => {
+      const items = [
+        { t:"Website Design & Development", d:"Custom WordPress block themes and marketing sites built on theme.json. Editor-friendly, token-driven, and production-ready from day one." },
+        { t:"Web Application Development", d:"React, Next.js, and Node — product UIs, internal tools, and platforms that scale with your team." },
+        { t:"Legacy Modernization", d:"We untangle aging codebases, migrate stacks, and refactor toward something your team actually wants to work in." },
+        { t:"AI Readiness", d:"Practical integration of LLMs into product and ops — scoped, measured, and built to ship, not to demo." },
+        { t:"Search Visibility, Strategy & Performance", d:"Core Web Vitals audits, structured data, and the engineering work that makes SEO actually work." },
+        { t:"Technical Leadership & Scoping", d:"Fractional CTO-style engagements: architecture reviews, vendor selection, and honest scoping." },
+        { t:"Managed Hosting & Ongoing Support", d:"Uptime, caching, on-call coverage, and the quiet maintenance that keeps sites running." },
+      ];
+      const [open, setOpen] = useState(0);
+
+      return (
+        <section id="services" style={{padding:'140px 0 120px', background:'var(--bg-2)', position:'relative'}}>
+          <div className="container">
+            <div style={{textAlign:'center', maxWidth:820, margin:'0 auto 64px'}}>
+              <span className="eyebrow">// services</span>
+              <h2 style={{fontSize:'clamp(36px, 4.6vw, 60px)', lineHeight:1.08, marginTop:20, fontWeight:600, letterSpacing:'-0.03em'}}>
+                What <span style={{color:'var(--teal-bright)', fontStyle:'italic', fontWeight:500}}>we build</span><br/>
+                — and how we build it.
+              </h2>
+            </div>
+
+            <div style={{maxWidth:920, margin:'0 auto', borderTop:'1px solid var(--line)'}}>
+              {items.map((it,i) => {
+                const isOpen = open === i;
+                return (
+                  <div key={it.t} style={{borderBottom:'1px solid var(--line)'}}>
+                    <button
+                      onClick={() => setOpen(isOpen ? -1 : i)}
+                      style={{
+                        width:'100%', background:'transparent', border:'none', cursor:'pointer',
+                        padding:'26px 4px', display:'flex', alignItems:'center', justifyContent:'space-between',
+                        color:'var(--fg)', textAlign:'left'
+                      }}>
+                      <span style={{
+                        fontFamily:'"Poppins",sans-serif',
+                        fontSize:'clamp(18px, 1.8vw, 22px)',
+                        fontWeight: isOpen ? 600 : 500,
+                        color: isOpen ? 'var(--fg)' : 'var(--fg-2)',
+                        letterSpacing:'-0.01em',
+                        transition:'color .2s, font-weight .2s'
+                      }}>{it.t}</span>
+                      <span style={{
+                        width:36, height:36, borderRadius:999,
+                        border:'1px solid var(--line-2)',
+                        display:'inline-flex', alignItems:'center', justifyContent:'center',
+                        color: isOpen ? 'var(--bg)' : 'var(--teal)',
+                        background: isOpen ? 'var(--teal)' : 'transparent',
+                        flexShrink:0, marginLeft:20, transition:'all .2s'
+                      }}>
+                        {isOpen ? <IconMinus size={14} w={2}/> : <IconPlus size={14} w={2}/>}
+                      </span>
+                    </button>
+                    <div style={{
+                      maxHeight: isOpen ? 300 : 0,
+                      overflow:'hidden',
+                      transition:'max-height .35s ease, padding .35s ease',
+                      paddingBottom: isOpen ? 26 : 0
+                    }}>
+                      <div className="svc-detail">
+                        <div className="mono" style={{fontSize:11, color:'var(--teal)', letterSpacing:'0.08em', paddingTop:4}}>
+                          // 0{i+1} / 0{items.length}
+                        </div>
+                        <div>
+                          <p style={{margin:0, fontSize:15.5, color:'var(--fg-2)', lineHeight:1.65, maxWidth:620}}>{it.d}</p>
+                          <a href="#" style={{
+                            display:'inline-flex', gap:8, alignItems:'center', marginTop:18,
+                            color:'var(--teal-bright)', fontFamily:'"Poppins",sans-serif', fontSize:13.5, fontWeight:500,
+                            borderBottom:'1px solid var(--teal-dim)', paddingBottom:4
+                          }}>
+                            Learn more <IconArrow size={14}/>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div style={{textAlign:'center', marginTop:56}}>
+              <a href="#contact" style={{
+                background:'var(--teal)', color:'var(--bg)',
+                padding:'14px 26px', borderRadius:999, fontWeight:600, fontSize:14.5,
+                fontFamily:'"Poppins",sans-serif', display:'inline-flex', gap:10, alignItems:'center'
+              }}>
+                Let's work together <IconArrow size={14}/>
+              </a>
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    /* ---------- Marquee (capabilities scroll) ---------- */
+    const Marquee = () => {
+      const items = ['Software Development','UX/UI Design','A.I. Implementation','Legacy Modernization','Block Theme Dev','Technical Leadership'];
+      const row = (dir) => (
+        <div style={{display:'flex', gap:0, animation:`marquee-${dir} 42s linear infinite`, flexShrink:0}}>
+          {Array.from({length:2}).flatMap((_,k) => items.map((it,i) => (
+            <span key={dir+k+'-'+i} style={{display:'inline-flex', alignItems:'center', gap:40, paddingInline:40, whiteSpace:'nowrap'}}>
+              <span style={{
+                fontFamily:'"Poppins",sans-serif',
+                fontSize:'clamp(32px, 5vw, 64px)',
+                fontWeight:600,
+                letterSpacing:'-0.03em',
+                color: dir==='ltr' ? 'var(--fg)' : 'transparent',
+                WebkitTextStroke: dir==='ltr' ? '0' : '1px var(--fg-3)'
+              }}>{it}</span>
+              <span style={{color:'var(--teal)', fontSize:22}}>✦</span>
+            </span>
+          )))}
+        </div>
+      );
+      return (
+        <section style={{padding:'64px 0', background:'var(--bg)', borderTop:'1px solid var(--line)', borderBottom:'1px solid var(--line)', overflow:'hidden'}}>
+          <style>{`
+            @keyframes marquee-ltr { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+            @keyframes marquee-rtl { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+          `}</style>
+          <div style={{display:'flex', flexDirection:'column', gap:8}}>
+            <div style={{display:'flex'}}>{row('ltr')}</div>
+            <div style={{display:'flex'}}>{row('rtl')}</div>
+          </div>
+        </section>
+      );
+    };
+
+    /* ---------- Process ---------- */
+    const Process = () => {
+      const steps = [
+        { k:'01', t:'Discovery', d:'We map your landscape — users, tech, constraints, and the real business problem hiding behind the request.' },
+        { k:'02', t:'Roadmap', d:'A written plan with scope, milestones, and honest tradeoffs. No black-box phases, no surprise invoices.' },
+        { k:'03', t:'Agile Sprints', d:'Weekly demos. Quick merges. A senior engineer who knows your stack and ships without a week-long ramp.' },
+        { k:'04', t:'Optimize & Support', d:'Ongoing performance, reliability, and on-call coverage. Or a clean handoff to your team — your call.' },
+      ];
+      return (
+        <section style={{padding:'140px 0 120px', background:'var(--bg-2)', borderTop:'1px solid var(--line)'}}>
+          <div className="container">
+            <div style={{textAlign:'center', maxWidth:820, margin:'0 auto 72px'}}>
+              <span className="eyebrow">// process</span>
+              <h2 style={{fontSize:'clamp(36px, 4.6vw, 60px)', lineHeight:1.08, marginTop:20, fontWeight:600, letterSpacing:'-0.03em'}}>
+                Process-driven.<br/>
+                <span style={{color:'var(--teal-bright)', fontStyle:'italic', fontWeight:500}}>Partnership-first.</span>
+              </h2>
+            </div>
+            <div className="process-grid">
+              {steps.map(s => (
+                <div key={s.k} style={{
+                  background:'var(--surface)',
+                  border:'1px solid var(--line)',
+                  borderRadius:14,
+                  padding:'32px 26px 30px',
+                  position:'relative',
+                  transition:'border-color .2s'
+                }}>
+                  <div style={{
+                    width:44, height:44, borderRadius:999,
+                    border:'1px solid var(--teal-dim)',
+                    background:'rgba(0,180,180,0.08)',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    color:'var(--teal-bright)',
+                    fontFamily:'"JetBrains Mono",monospace', fontWeight:500, fontSize:13,
+                    boxShadow:'0 0 0 4px rgba(0,180,180,0.05)'
+                  }}>{s.k}</div>
+                  <h4 style={{fontSize:20, marginTop:22, color:'var(--fg)', fontWeight:600, letterSpacing:'-0.015em'}}>{s.t}</h4>
+                  <p style={{marginTop:12, fontSize:14, color:'var(--fg-2)', lineHeight:1.6}}>{s.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    /* ---------- CTA ---------- */
+    const CTA = () => (
+      <section id="contact" style={{padding:'120px 0', background:'var(--bg)', position:'relative', overflow:'hidden'}}>
+        {/* ambient glow */}
+        <div style={{position:'absolute', top:'50%', left:'50%', width:900, height:900, transform:'translate(-50%,-50%)', background:'radial-gradient(circle, rgba(0,180,180,0.18) 0%, rgba(0,180,180,0.04) 40%, rgba(0,180,180,0) 70%)', pointerEvents:'none'}}/>
+        {/* subtle grid */}
+        <svg viewBox="0 0 1400 600" preserveAspectRatio="xMidYMid slice" style={{position:'absolute', inset:0, width:'100%', height:'100%', opacity:0.4, pointerEvents:'none'}} aria-hidden="true">
+          {Array.from({length:40}).map((_,k)=>(
+            <line key={k} x1={k*36} y1="0" x2={k*36} y2="600" stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
+          ))}
+          {Array.from({length:20}).map((_,k)=>(
+            <line key={'h'+k} x1="0" y1={k*32} x2="1400" y2={k*32} stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
+          ))}
+        </svg>
+
+        <div className="container" style={{position:'relative', textAlign:'center', maxWidth:820, margin:'0 auto'}}>
+          <span className="eyebrow">// next.step = 'build'</span>
+          <h2 style={{fontSize:'clamp(40px, 5vw, 68px)', lineHeight:1.05, marginTop:20, fontWeight:600, letterSpacing:'-0.035em'}}>
+            Got a project <span style={{color:'var(--teal-bright)', fontStyle:'italic', fontWeight:500}}>on the roadmap?</span>
+          </h2>
+          <p style={{marginTop:22, fontSize:18, color:'var(--fg-2)', maxWidth:560, margin:'22px auto 0', lineHeight:1.55}}>
+            Drop us a line. We'll reply within one business day with honest feedback on scope, timeline, and whether we're the right fit.
+          </p>
+          <div style={{display:'flex', gap:14, marginTop:40, justifyContent:'center', flexWrap:'wrap'}}>
+            <a href="mailto:hello@yohdev.com" style={{
+              background:'var(--teal)', color:'var(--bg)',
+              padding:'15px 28px', borderRadius:999, fontWeight:600, fontSize:15,
+              fontFamily:'"Poppins",sans-serif', display:'inline-flex', gap:10, alignItems:'center',
+              boxShadow:'0 0 0 1px rgba(0,180,180,.45), 0 20px 50px -20px rgba(0,180,180,.7)'
+            }}>
+              hello@yohdev.com <IconArrow size={15}/>
+            </a>
+            <a href="#" style={{
+              padding:'15px 26px', borderRadius:999, fontWeight:500, fontSize:15,
+              color:'var(--fg)', border:'1px solid var(--line-2)', background:'rgba(10,14,17,0.4)',
+              fontFamily:'"Poppins",sans-serif', display:'inline-flex', gap:10, alignItems:'center'
+            }}>
+              Book a 30-min intro
+            </a>
+          </div>
+        </div>
+      </section>
+    );
+
+    /* ---------- Footer ---------- */
+    const Footer = () => (
+      <footer style={{background:'var(--black)', color:'var(--fg-2)', padding:'56px 0 36px', borderTop:'1px solid var(--line)'}}>
+        <div className="container" style={{display:'flex', justifyContent:'space-between', flexWrap:'wrap', gap:24, alignItems:'center'}}>
+          <div style={{display:'flex', alignItems:'center', gap:10}}>
+            <span style={{fontFamily:'"Poppins",sans-serif', fontSize:20, fontWeight:700, color:'var(--fg)', letterSpacing:'-0.03em'}}>
+              Yoh<span style={{color:'var(--teal)'}}>Dev</span><span className="mono" style={{color:'var(--teal)',fontWeight:500}}>.</span>
+            </span>
+            <span style={{color:'var(--fg-3)', fontSize:13, marginLeft:10}}>© 2026 · Remote-first · US-based</span>
+          </div>
+          <div style={{display:'flex', gap:28, fontSize:13.5}}>
+            <a href="#">Services</a>
+            <a href="#">Work</a>
+            <a href="#">Process</a>
+            <a href="#">Contact</a>
+            <a href="#">Privacy</a>
+          </div>
+        </div>
+      </footer>
+    );
+
+    /* ---------- Tweaks ---------- */
+    const TweaksPanel = ({tweaks, setTweaks, onClose}) => {
+      const setKey = (k, v) => {
+        const next = {...tweaks, [k]: v};
+        setTweaks(next);
+        window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]: v}}, '*');
+      };
+      return (
+        <div style={{
+          position:'fixed', right:20, bottom:20, zIndex:200,
+          background:'var(--surface-2)', border:'1px solid var(--line-2)', borderRadius:12,
+          padding:'16px 20px', width:280, color:'var(--fg)',
+          boxShadow:'0 30px 60px -15px rgba(0,0,0,.6)', fontFamily:'"Poppins",sans-serif'
+        }}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12}}>
+            <div style={{fontSize:15, fontWeight:600}}>Tweaks</div>
+            <button onClick={onClose} style={{background:'transparent', border:'none', color:'var(--fg-3)', cursor:'pointer'}}>×</button>
+          </div>
+          <Row label="Hero art">
+            <Seg value={tweaks.heroArt} onChange={v=>setKey('heroArt', v)} opts={[['faceted','Faceted'],['minimal','Minimal']]}/>
+          </Row>
+          <Row label="Accent">
+            <Seg value={tweaks.accent} onChange={v=>setKey('accent', v)} opts={[['teal','Teal'],['bright','Bright']]}/>
+          </Row>
+        </div>
+      );
+    };
+    const Row = ({label, children}) => (
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', padding:'10px 0', borderTop:'1px solid var(--line)'}}>
+        <div style={{fontSize:12.5, color:'var(--fg-2)'}}>{label}</div>
+        <div>{children}</div>
+      </div>
+    );
+    const Seg = ({value, onChange, opts}) => (
+      <div style={{display:'flex', background:'rgba(255,255,255,0.05)', borderRadius:6, padding:3}}>
+        {opts.map(([k,l])=>(
+          <button key={k} onClick={()=>onChange(k)} style={{
+            padding:'6px 12px', borderRadius:4, border:'none', cursor:'pointer',
+            background: value===k ? 'var(--teal)' : 'transparent',
+            color: value===k ? 'var(--bg)' : 'var(--fg-2)',
+            fontSize:12, fontWeight:600, fontFamily:'inherit'
+          }}>{l}</button>
+        ))}
+      </div>
+    );
+
+    /* ---------- App ---------- */
+    const App = () => {
+      const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
+      const [editOn, setEditOn] = useState(false);
+
+      useEffect(() => {
+        const onMsg = (e) => {
+          if (!e.data) return;
+          if (e.data.type === '__activate_edit_mode') setEditOn(true);
+          if (e.data.type === '__deactivate_edit_mode') setEditOn(false);
+        };
+        window.addEventListener('message', onMsg);
+        window.parent.postMessage({type:'__edit_mode_available'}, '*');
+        return () => window.removeEventListener('message', onMsg);
+      }, []);
+
+      useEffect(() => {
+        const map = {teal:'#00B4B4', bright:'#2DE0E0'};
+        document.documentElement.style.setProperty('--teal', map[tweaks.accent] || '#00B4B4');
+      }, [tweaks.accent]);
+
+      return (
+        <div>
+          <AnnouncementBar/>
+          <Nav/>
+          <Hero heroArt={tweaks.heroArt} headline={tweaks.headline}/>
+          <Services/>
+          <Marquee/>
+          <Process/>
+          <CTA/>
+          <Footer/>
+          {editOn && <TweaksPanel tweaks={tweaks} setTweaks={setTweaks} onClose={()=>setEditOn(false)}/>}
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body>
+</html>

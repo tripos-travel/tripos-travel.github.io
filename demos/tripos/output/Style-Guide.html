@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TripOS design system</title>
+  <meta name="description" content="The TripOS design system: the departures-board concept, color tokens with contrast, the three type roles, and every component rendered live from the real stylesheet.">
+  <script>
+    document.documentElement.classList.add('js');
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
+  </script>
+  <link rel="stylesheet" href="assets/css/tripos.css">
+  <style>
+    .sg-header{position:sticky;top:0;z-index:20;background:var(--board);color:var(--chalk);border-bottom:1px solid var(--line-board)}
+    .sg-header .container{height:var(--header-h);display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .sg-header a.back{margin-left:auto;font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--flap)}
+    .sg-intro{padding:clamp(56px,7vw,104px) 0 40px}
+    .sg-intro h1{font-size:var(--t-h2);max-width:12ch}
+    .sg-intro .lede{margin-top:22px;color:var(--ink-2)}
+    .sg-sec{padding:48px 0;border-top:2px solid var(--ink)}
+    .sg-sec > .container > h2{color:var(--flap-line);margin-bottom:26px}
+    .concept{display:grid;grid-template-columns:4fr 8fr;gap:32px}
+    .concept p.big{font-family:var(--display);font-weight:600;font-stretch:88%;font-size:var(--t-statement);line-height:1.1;letter-spacing:-.02em}
+    table.sg{width:100%;border-collapse:collapse;font-size:15px}
+    table.sg th,table.sg td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line-paper);vertical-align:top}
+    table.sg th{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+    .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1px;background:var(--line-paper);border:1px solid var(--line-paper)}
+    .sw{background:var(--paper);padding:0 0 14px}
+    .sw__chip{height:96px;margin-bottom:12px}
+    .sw p{padding:0 14px;font-size:14px;line-height:1.4}
+    .sw code{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+    .type-row{display:grid;grid-template-columns:3fr 9fr;gap:24px;padding:22px 0;border-bottom:1px solid var(--line-paper);align-items:baseline}
+    .type-row .label{color:var(--ink-2)}
+    .demo{background:var(--paper-2);border-radius:var(--r);padding:28px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+    .demo--board{background:var(--board);color:var(--chalk)}
+    .snippet{margin-top:12px;background:var(--board);color:var(--chalk);font-family:var(--mono);font-size:13px;line-height:1.6;padding:16px 18px;border-radius:var(--r);overflow-x:auto;white-space:pre}
+    .rules{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+    .rules li{padding:10px 0;border-bottom:1px solid var(--line-paper);font-size:16px}
+    @media (max-width:820px){.concept,.rules,.type-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="sg-header on-board">
+    <div class="container">
+      <a class="wordmark" href="Landing-Page.html" aria-label="TripOS landing page">Trip<span class="wordmark__tile">OS</span></a>
+      <span class="label" style="color:var(--chalk-2)">Design system</span>
+      <a class="back" href="../index.html">Brand hub</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="sg-intro" aria-labelledby="sg-title">
+      <div class="container">
+        <h1 class="display" id="sg-title">The TripOS design system.</h1>
+        <p class="lede">Everything on the landing page and in every brochure comes from one stylesheet: <code>output/assets/css/tripos.css</code>. Change a token there and the whole brand moves together.</p>
+      </div>
+    </section>
+
+    <section class="sg-sec" aria-labelledby="c-title">
+      <div class="container">
+        <h2 class="label" id="c-title">Concept</h2>
+        <div class="concept">
+          <p class="big">The departures board for your whole trip: every booking, plan and change on one screen, with the problems already handled.</p>
+          <table class="sg">
+            <caption class="sr-only">Each design device and where it comes from</caption>
+            <thead><tr><th scope="col">Device</th><th scope="col">Comes from</th></tr></thead>
+            <tbody>
+              <tr><td>The board with a status column</td><td>&ldquo;Trip planning and management is scattered across too many apps.&rdquo;</td></tr>
+              <tr><td>&ldquo;from:&rdquo; source labels</td><td>The pilot form question: where your trip info is saved.</td></tr>
+              <tr><td>A status that flips from Delayed to handled</td><td>&ldquo;An in-trip companion&rdquo; that deals with mid-trip problems.</td></tr>
+              <tr><td>Board yellow, mono caps</td><td>Real station and airport departure boards.</td></tr>
+              <tr><td>The OS flap tile in the wordmark</td><td>The name, set as one flap on the board.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="sg-sec" aria-labelledby="col-title">
+      <div class="container">
+        <h2 class="label" id="col-title">Color</h2>
+        <div class="swatches">
+          <div class="sw"><div class="sw__chip" style="background:var(--board)"></div><p><strong>Board</strong><br><code>#101218</code><br>The one dark surface.</p></div>
+          <div class="sw"><div class="sw__chip" style="background:var(--paper);box-shadow:inset 0 0 0 1px var(--line-paper)"></div><p><strong>Paper</strong><br><code>#F7F4EC</code><br>Main light surface.</p></div>
+          <div class="sw"><div class="sw__chip" style="background:var(--paper-2)"></div><p><strong>Stub</strong><br><code>#EDE7D8</code><br>Alternate light surface.</p></div>
+          <div class="sw"><div class="sw__chip" style="background:var(--flap)"></div><p><strong>Flap</strong><br><code>#FFD23F</code><br>The accent. Surface, or text on board only.</p></div>
+          <div class="sw"><div class="sw__chip" style="background:var(--flap-line)"></div><p><strong>Flap line</strong><br><code>#735600</code><br>Yellow for labels and lines on paper.</p></div>
+          <div class="sw"><div class="sw__chip" style="background:var(--go)"></div><p><strong>Go</strong><br><code>#6EE7A0</code><br>Board status only: sorted.</p></div>
+          <div class="sw"><div class="sw__chip" style="background:var(--alert)"></div><p><strong>Alert</strong><br><code>#FF7A66</code><br>Board status only: needs fixing.</p></div>
+          <div class="sw"><div class="sw__chip" style="background:var(--ink)"></div><p><strong>Ink</strong><br><code>#14161C</code><br>Text on paper and flap.</p></div>
+        </div>
+        <table class="sg" style="margin-top:28px">
+          <caption class="sr-only">Contrast of each text color on each surface</caption>
+          <thead><tr><th scope="col">Text</th><th scope="col">On</th><th scope="col">Ratio</th><th scope="col">Use</th></tr></thead>
+          <tbody>
+            <tr><td>Ink</td><td>Paper</td><td>16.5:1</td><td>Body, headlines</td></tr>
+            <tr><td>Ink 2</td><td>Paper</td><td>7.6:1</td><td>Muted body</td></tr>
+            <tr><td>Flap line</td><td>Paper</td><td>6.2:1</td><td>Labels, numbers</td></tr>
+            <tr><td>Ink</td><td>Flap</td><td>12.5:1</td><td>Buttons, the band</td></tr>
+            <tr><td>Chalk</td><td>Board</td><td>16.6:1</td><td>Text on board</td></tr>
+            <tr><td>Chalk 2</td><td>Board</td><td>8.7:1</td><td>Muted on board</td></tr>
+            <tr><td>Flap</td><td>Board</td><td>13.0:1</td><td>Labels, accents on board</td></tr>
+            <tr><td>Go / Alert</td><td>Board row</td><td>10.9 / 6.6:1</td><td>Status text</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sg-sec" aria-labelledby="t-title">
+      <div class="container">
+        <h2 class="label" id="t-title">Type: Bricolage says it. Figtree explains it. Mono labels it.</h2>
+        <div class="type-row"><span class="label">Display &middot; Bricolage Grotesque 800, width 84%</span><p class="display" style="font-size:clamp(48px,7vw,96px)">Enjoy the trip.</p></div>
+        <div class="type-row"><span class="label">Statement &middot; Bricolage 600, width 88%</span><p class="statement" style="font-family:var(--display);font-weight:600;font-stretch:88%;font-size:var(--t-statement);line-height:1.1;letter-spacing:-.02em">TripOS puts it on one board.</p></div>
+        <div class="type-row"><span class="label">Body &middot; Figtree 400, 18px</span><p style="max-width:62ch">Bring your bookings and plans in from wherever they live. TripOS sorts them into one timeline you can read in a glance.</p></div>
+        <div class="type-row"><span class="label">Label &middot; JetBrains Mono 700, 12px caps</span><p class="label">Before you go &middot; Organize</p></div>
+      </div>
+    </section>
+
+    <section class="sg-sec" aria-labelledby="k-title">
+      <div class="container">
+        <h2 class="label" id="k-title">Components</h2>
+
+        <h3 class="label" style="margin:0 0 12px">Buttons. One primary per view.</h3>
+        <div class="demo">
+          <a class="btn btn--ink" href="#k-title"><span>Join the pilot</span> <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn--ghost" href="#k-title"><span>See a sample brochure</span></a>
+        </div>
+        <div class="demo demo--board on-board" style="margin-top:12px">
+          <a class="btn btn--flap" href="#k-title"><span>Join the pilot</span> <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn--ghost" href="#k-title" style="color:var(--chalk)"><span>See a sample brochure</span></a>
+        </div>
+        <pre class="snippet">&lt;a class="btn btn--flap" href="#pilot"&gt;&lt;span&gt;Join the pilot&lt;/span&gt; &lt;span class="btn__arrow" aria-hidden="true"&gt;&amp;rarr;&lt;/span&gt;&lt;/a&gt;</pre>
+
+        <h3 class="label" style="margin:40px 0 12px">The board. The signature device.</h3>
+        <div class="board">
+          <div class="board__head"><span class="board__title">Lisbon &middot; 2 travelers</span><span class="board__clock">SAT 09:12</span></div>
+          <table class="board__table">
+            <caption class="sr-only">Example board</caption>
+            <thead><tr><th scope="col">When</th><th scope="col">Plan</th><th scope="col">Status</th></tr></thead>
+            <tbody>
+              <tr><td class="board__time">SAT 10:30</td><td><span class="board__what">Tram 28</span><br><span class="board__src">from: notes app</span></td><td><span class="status status--go">On time</span></td></tr>
+              <tr><td class="board__time">SAT 20:00</td><td><span class="board__what">Dinner booking</span><br><span class="board__src">from: email</span></td><td><span class="status status--flap">Confirm by 18:00</span></td></tr>
+              <tr><td class="board__time">SUN 07:40</td><td><span class="board__what">Flight home</span><br><span class="board__src">from: airline app</span></td><td><span class="status status--alert">Cancelled</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <pre class="snippet">&lt;span class="status status--go|status--flap|status--alert"&gt;On time&lt;/span&gt;</pre>
+
+        <h3 class="label" style="margin:40px 0 12px">Ledger. Numbered steps on hairlines.</h3>
+        <ol class="ledger">
+          <li class="ledger__row"><span class="ledger__n">01</span><span class="ledger__text">Rebook while you queue.</span></li>
+          <li class="ledger__row"><span class="ledger__n">02</span><span class="ledger__text">Keep the proof.</span></li>
+        </ol>
+
+        <h3 class="label" style="margin:40px 0 12px">Wordmark</h3>
+        <div class="demo"><span class="wordmark" style="font-size:56px">Trip<span class="wordmark__tile">OS</span></span></div>
+        <div class="demo demo--board" style="margin-top:12px"><span class="wordmark" style="font-size:56px;color:var(--chalk)">Trip<span class="wordmark__tile">OS</span></span></div>
+      </div>
+    </section>
+
+    <section class="sg-sec" aria-labelledby="r-title">
+      <div class="container">
+        <h2 class="label" id="r-title">Rules</h2>
+        <div class="rules">
+          <ul>
+            <li>Yellow is under 5% of any screen, except the one band per page.</li>
+            <li>One dark board panel behind the conversion.</li>
+            <li>Headlines in sentence case, ending with a period.</li>
+            <li>No em dashes. No stock phrases.</li>
+            <li>Motion: one curve, <code>cubic-bezier(.16,1,.3,1)</code>. The split-flap runs only on the hero board.</li>
+          </ul>
+          <ul>
+            <li><strong>Removed, do not reintroduce:</strong> purple gradients, emoji icons, icon-in-a-circle feature grids.</li>
+            <li>No made-up stats, quotes or testimonials. Brochure facts are sourced.</li>
+            <li>Board status colors (go, alert) live only inside the board.</li>
+            <li>The only radius is 6px.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

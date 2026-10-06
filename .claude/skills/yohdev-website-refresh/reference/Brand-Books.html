@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>YohDev — Brand Books</title>
+<meta name="description" content="Every YohDev brand book in one place — the plain-language Brand Basics one-pager and the full Brand Playbook, plus the technical design system."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#05080A; --bg-2:#0A0E11; --surface:#0D1114;
+    --line:rgba(255,255,255,0.08); --line-2:rgba(255,255,255,0.14);
+    --fg:#F5F7F7; --fg-2:rgba(245,247,247,0.74); --fg-3:rgba(245,247,247,0.55);
+    --teal:#00B4B4; --teal-bright:#2DE0E0;
+    --display:"Poppins",sans-serif; --body:"Roboto",sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+    --radius:12px; --page-max:960px; --px:clamp(20px,5vw,48px);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;font-family:var(--body);font-size:17px;line-height:1.6;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0;letter-spacing:-0.02em}
+  p{margin:0}
+  a{color:var(--teal-bright)}
+  img{display:block;max-width:100%}
+
+  .site-header{background:var(--bg-2);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+  .site-header__inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:16px var(--px)}
+  .logo{font-family:var(--display);font-weight:700;font-size:20px;color:var(--fg);letter-spacing:-0.03em;text-decoration:none}
+  .logo span{color:var(--teal)}
+  .site-header__tag{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-3)}
+  .site-header__link{margin-left:auto;font-family:var(--display);font-weight:500;font-size:14px;color:var(--teal-bright);text-decoration:none}
+
+  .hero{border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%)}
+  .hero__inner{max-width:var(--page-max);margin:0 auto;padding:72px var(--px)}
+  .eyebrow{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal)}
+  .hero h1{font-weight:600;font-size:clamp(34px,6vw,56px);margin-top:12px}
+  .hero h1 em{color:var(--teal-bright);font-style:normal}
+  .hero p{color:var(--fg-2);font-size:clamp(16px,2.4vw,19px);margin-top:18px;max-width:620px}
+
+  main{max-width:var(--page-max);margin:0 auto;padding:56px var(--px) 96px}
+  .books{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .book{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:var(--radius);padding:30px 28px 26px;text-decoration:none;color:inherit;transition:border-color .15s ease,transform .15s ease,box-shadow .15s ease}
+  .book:hover{transform:translateY(-2px);box-shadow:0 20px 50px -25px rgba(0,180,180,.5);border-color:var(--line-2)}
+  .book__kicker{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright)}
+  .book__title{font-weight:600;font-size:24px;margin-top:10px;color:var(--fg)}
+  .book__who{font-family:var(--display);font-weight:500;font-size:13px;color:var(--fg-3);margin-top:6px}
+  .book__desc{font-size:15px;color:var(--fg-2);margin-top:14px;line-height:1.55}
+  .book__link{margin-top:20px;font-family:var(--display);font-weight:600;font-size:14px;color:var(--teal-bright)}
+
+  .aside{margin-top:24px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--teal-bright);border-radius:var(--radius);padding:24px 28px}
+  .aside__text{flex:1 1 340px}
+  .aside__label{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-3)}
+  .aside__title{font-family:var(--display);font-weight:600;font-size:19px;margin-top:6px;color:var(--fg)}
+  .aside__desc{font-size:14px;color:var(--fg-2);margin-top:6px;line-height:1.5}
+  .aside__btn{font-family:var(--display);font-weight:600;font-size:15px;background:var(--teal);color:var(--bg);text-decoration:none;padding:12px 22px;border-radius:999px;white-space:nowrap}
+
+  footer{border-top:1px solid var(--line);color:var(--fg-3);font-size:13px}
+  footer .inner{max-width:var(--page-max);margin:0 auto;padding:28px var(--px)}
+
+  @media (max-width:720px){ .books{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="../index.html" class="logo">Yoh<span>Dev</span></a>
+      <span class="site-header__tag">Brand Books</span>
+      <a href="../index.html" class="site-header__link">← Back to demo</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero__inner">
+      <p class="eyebrow">YohDev Brand Books</p>
+      <h1>Every brand book, <em>in one place.</em></h1>
+      <p>The guides that keep YohDev consistent — a quick one-pager for anyone touching marketing, and the full playbook for the deeper brand story. Pick the one that fits your task.</p>
+    </div>
+  </div>
+
+  <main>
+    <div class="books">
+
+      <a href="Brand-Basics.html" class="book">
+        <span class="book__kicker">One-Pager · Quick Start</span>
+        <h2 class="book__title">Brand Basics</h2>
+        <p class="book__who">For marketing &amp; owners</p>
+        <p class="book__desc">The fast, plain-language reference — our colors, fonts, buttons, building blocks, and a short list of do's and don'ts. Everything you need to make something look like YohDev, on a single page.</p>
+        <span class="book__link">Open Brand Basics →</span>
+      </a>
+
+      <a href="Playbook.html" class="book">
+        <span class="book__kicker">Full Guide · Deep Dive</span>
+        <h2 class="book__title">Brand Playbook</h2>
+        <p class="book__who">For brand &amp; stakeholders</p>
+        <p class="book__desc">The complete brand story — positioning and promise, who we serve, personas, voice and tone, the messaging framework, and the design-system rationale that keeps every page on-brand.</p>
+        <span class="book__link">Open Brand Playbook →</span>
+      </a>
+
+    </div>
+
+    <div class="aside">
+      <div class="aside__text">
+        <div class="aside__label">For designers &amp; developers</div>
+        <div class="aside__title">Design System</div>
+        <p class="aside__desc">The technical source of truth — exact color tokens, type scale, spacing, the component set, and a drop-in <span style="font-family:var(--mono)">theme.json</span>.</p>
+      </div>
+      <a href="Style-Guide.html" class="aside__btn">Open the Design System →</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="inner">© 2026 YohDev · Brand Books</div>
+  </footer>
+
+</body>
+</html>

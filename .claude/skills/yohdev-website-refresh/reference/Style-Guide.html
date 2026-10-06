@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>YohDev — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    /* Dark-mode rebuild — tokens remap to the dark aesthetic
+       Note: --black and --white are intentionally remapped so legacy
+       "color:var(--black); background:var(--white)" rules flip automatically. */
+    --black:#F5F7F7;          /* was primary text color — now bright on dark */
+    --ink:#F5F7F7;
+    --ink-2:#E6EAEA;
+    --teal:#00B4B4;
+    --teal-deep:#2DE0E0;
+    --teal-dark:#006E6E;
+    --teal-soft:rgba(0,180,180,0.12);
+    --g-100:#0F1417;
+    --g-200:rgba(255,255,255,0.06);
+    --g-300:rgba(255,255,255,0.12);
+    --g-400:rgba(245,247,247,0.42);
+    --g-500:rgba(245,247,247,0.55);
+    --g-600:rgba(245,247,247,0.70);
+    --g-700:rgba(245,247,247,0.82);
+    --g-800:#E6EAEA;
+    --g-900:#F5F7F7;
+    --white:#0A0E11;          /* was surface — now dark surface */
+    --canvas:#05080A;
+    --surface:#0A0E11;
+    --line:rgba(255,255,255,0.08);
+    --true-black:#000000;     /* for code blocks and footer */
+  }
+  /* Code block tweaks for dark canvas */
+  .code{background:var(--true-black) !important; border:1px solid rgba(255,255,255,0.06)}
+  /* Button primary — teal bg needs true-black text for contrast */
+  .b-primary{background:var(--teal) !important; color:var(--true-black) !important}
+  .b-primary:hover{background:var(--teal-deep) !important; color:var(--true-black) !important}
+  /* Button secondary: bright text, visible border */
+  .b-secondary{color:var(--ink) !important; border-color:var(--g-300) !important}
+  .b-secondary:hover{background:var(--ink) !important; color:var(--true-black) !important; border-color:var(--ink) !important}
+  .b-ghost{color:var(--teal-deep) !important}
+  .b-ghost:hover{color:var(--ink) !important}
+  /* Nav announcement bar — pure black for contrast */
+  .nav-ann{background:var(--true-black) !important; color:rgba(245,247,247,0.65) !important}
+  /* Footer specimen block */
+  .foot-spec{background:var(--true-black) !important}
+  /* Note pills */
+  .note .pill{background:var(--true-black) !important}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--canvas);color:var(--ink)}
+  body{font-family:"Roboto",sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{font-family:"Poppins",sans-serif;font-weight:600;letter-spacing:-0.015em;margin:0;color:var(--ink)}
+  a{color:var(--teal-deep);text-decoration:none}
+  code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px}
+  .container{max-width:1200px;margin:0 auto;padding:0 48px}
+  .eyebrow{font-family:"Poppins",sans-serif;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;color:var(--teal-deep)}
+
+  header.sg{padding:72px 0 56px;border-bottom:1px solid var(--line);background:var(--surface)}
+  header.sg .meta{display:flex;justify-content:space-between;align-items:end;gap:40px}
+  header.sg h1{font-size:68px;line-height:1;font-weight:600;letter-spacing:-0.03em;margin-top:20px}
+  header.sg h1 span.tag{color:var(--teal);font-family:"JetBrains Mono",monospace;font-weight:500}
+  header.sg .sub{font-size:15.5px;color:var(--g-600);max-width:360px;line-height:1.6;font-family:"Roboto",sans-serif}
+
+  .toc{display:flex;gap:28px;margin-top:40px;font-size:13px;color:var(--g-500);flex-wrap:wrap;font-family:"JetBrains Mono",monospace}
+  .toc a{display:inline-flex;gap:10px;align-items:center;color:var(--ink-2);font-weight:500}
+  .toc a::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--teal)}
+
+  section.block{padding:88px 0;border-bottom:1px solid var(--line)}
+  section.block .head{display:grid;grid-template-columns:200px 1fr;gap:60px;margin-bottom:48px;align-items:baseline}
+  section.block .num{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--teal-deep)}
+  section.block h2{font-size:40px;line-height:1.2;font-weight:600;letter-spacing:-0.02em}
+  section.block h2 span.acc{color:var(--teal-deep)}
+  section.block .intro{font-size:16px;color:var(--g-700);max-width:620px;margin-top:24px;line-height:1.6;font-family:"Roboto",sans-serif}
+
+  /* Color swatches */
+  .palette{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .swatch{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--white)}
+  .swatch .chip{aspect-ratio:5/3;display:flex;align-items:end;padding:16px}
+  .swatch .chip .tag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:0.05em;font-weight:500;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,.9);color:#05080A}
+  .swatch .chip.dark .tag{background:rgba(0,0,0,.35);color:white}
+  .swatch .meta{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px}
+  .swatch .name{font-family:"Poppins",sans-serif;font-size:15px;color:var(--black);font-weight:600}
+  .swatch .slug{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--g-500)}
+  .swatch .hex{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2);margin-top:4px;font-weight:500}
+
+  /* Type specimens */
+  .type-row{display:grid;grid-template-columns:170px 1fr 280px;gap:32px;padding:22px 0;border-top:1px solid var(--line);align-items:center}
+  .type-row:first-child{border-top:none}
+  .type-row .label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--g-500);text-transform:uppercase;letter-spacing:0.05em;font-weight:500}
+  .type-row .specimen.poppins{font-family:"Poppins",sans-serif;color:var(--ink)}
+  .type-row .specimen.roboto{font-family:"Roboto",sans-serif;color:var(--ink)}
+  .type-row .specs{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--g-500);line-height:1.6;text-align:right}
+  .type-row .specs b{color:var(--ink-2);font-weight:500}
+
+  /* Buttons showcase */
+  .btn-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+  .btn-cell{border:1px solid var(--line);border-radius:10px;padding:30px 28px;background:var(--white);display:flex;flex-direction:column;gap:22px}
+  .btn-cell h3{font-size:15px;color:var(--black);font-family:"Poppins",sans-serif;font-weight:600}
+  .btn-cell .row{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+  .btn-cell .caption{font-size:11px;color:var(--g-500);font-family:"JetBrains Mono",monospace;letter-spacing:0.04em}
+
+  /* Button component styles */
+  .b{display:inline-flex;align-items:center;gap:10px;border-radius:6px;font-family:"Poppins",sans-serif;font-weight:500;font-size:14.5px;padding:10px 18px;cursor:pointer;border:1px solid transparent;transition:all .15s ease;text-decoration:none}
+  .b svg{width:15px;height:15px}
+  .b-primary{background:var(--teal);color:var(--true-black);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .b-primary:hover{background:var(--teal-deep);color:var(--true-black)}
+  .b-primary:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .b-secondary{background:transparent;color:var(--black);border-color:var(--g-300)}
+  .b-secondary:hover{background:var(--black);color:var(--white);border-color:var(--black)}
+  .b-ghost{background:transparent;color:var(--teal-deep);padding-left:4px;padding-right:4px}
+  .b-ghost:hover{color:var(--black)}
+  .b-ghost:hover .arrow{transform:translateX(2px)}
+  .b .arrow{transition:transform .15s ease}
+  .b-sm{padding:7px 14px;font-size:13px}
+  .b-lg{padding:13px 22px;font-size:15px}
+  .b-disabled{opacity:.5;pointer-events:none}
+
+  /* Nav specimen */
+  .nav-spec{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--white)}
+  .nav-ann{background:var(--true-black);color:rgba(245,247,247,0.65);height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:12.5px;font-family:"Roboto",sans-serif}
+  .nav-ann .hl{color:var(--teal);font-family:"JetBrains Mono",monospace}
+  .nav-bar{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--white);border-bottom:1px solid var(--line)}
+  .nav-logo{font-family:"Poppins",sans-serif;font-size:20px;color:var(--black);letter-spacing:-0.02em;font-weight:700}
+  .nav-logo span.dev{color:var(--teal-deep);font-weight:500}
+  .nav-links{display:flex;gap:26px;font-size:14px;color:var(--g-700);font-family:"Poppins",sans-serif;font-weight:500}
+  .nav-links span{color:var(--g-700)}
+  .nav-links span.active{color:var(--black);position:relative}
+  .nav-links span.active::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--teal);border-radius:2px}
+  .nav-cta{display:flex;gap:10px;align-items:center}
+
+  /* Footer specimen */
+  .foot-spec{background:var(--true-black);color:rgba(255,255,255,.75);border-radius:10px;padding:48px 48px 28px;position:relative;overflow:hidden}
+  .foot-spec .grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
+  .foot-spec .col .h{font-family:"Poppins",sans-serif;font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:16px}
+  .foot-spec .col span{display:block;color:rgba(255,255,255,.72);font-size:13.5px;margin-bottom:10px;font-family:"Roboto",sans-serif}
+  .foot-spec .legal span{color:rgba(255,255,255,.62)}
+  .foot-spec .brand{font-family:"Poppins",sans-serif;font-size:22px;color:var(--ink);font-weight:700;letter-spacing:-0.02em}
+  .foot-spec .brand span.dev{color:var(--teal)}
+  .foot-spec .blurb{font-family:"Roboto",sans-serif;font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin-top:14px;max-width:280px}
+  .foot-spec .legal{margin-top:40px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.62);font-family:"Roboto",sans-serif}
+
+  /* Code block */
+  .code{background:var(--true-black);color:#E5E5E5;border-radius:10px;padding:24px 26px;font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.65;white-space:pre;overflow-x:auto}
+  .code .k{color:#00B4B4}
+  .code .s{color:#D9C48E}
+  .code .n{color:#8FB5D1}
+  .code .c{color:#8a8a8a;font-style:italic}
+
+  .note{background:var(--white);border:1px solid var(--line);border-left:3px solid var(--teal);border-radius:8px;padding:16px 20px;font-size:14px;color:var(--g-700);display:flex;gap:14px;font-family:"Roboto",sans-serif}
+  .note .pill{background:var(--true-black);color:var(--teal);font-weight:700;font-size:10px;letter-spacing:0.12em;padding:4px 10px;border-radius:4px;height:fit-content;text-transform:uppercase;font-family:"Poppins",sans-serif}
+
+  /* --- Responsive: collapse fixed grids on smaller screens --- */
+  @media (max-width:768px){
+    section.block .head{grid-template-columns:1fr;gap:14px;margin-bottom:32px}
+    .palette{grid-template-columns:repeat(2,1fr)}
+    .type-row{grid-template-columns:1fr;gap:10px}
+    .type-row .specs{text-align:left}
+    .btn-row{grid-template-columns:1fr}
+    .foot-spec .grid{grid-template-columns:1fr 1fr;gap:24px}
+    .sg-two{grid-template-columns:1fr !important}
+    header.sg .meta{flex-direction:column;gap:24px;align-items:start}
+    header.sg .sub{max-width:100%}
+    header.sg h1{font-size:clamp(40px,11vw,68px)}
+  }
+  @media (max-width:480px){
+    .palette{grid-template-columns:1fr}
+    .foot-spec .grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="sg">
+  <div class="container">
+    <div class="meta">
+      <div>
+        <span class="eyebrow">Design System · For designers &amp; developers</span>
+        <h1>YohDev<span class="tag">.</span><br/>design tokens &amp; patterns</h1>
+      </div>
+      <p class="sub">A lean handoff reference for a custom WordPress block theme. Brand tokens, typography, core buttons, header, and footer — plus a drop-in <span class="mono">theme.json</span> snippet keyed to the palette slugs below.</p>
+    </div>
+    <nav class="toc">
+      <a href="#colors">01_colors</a>
+      <a href="#type">02_typography</a>
+      <a href="#buttons">03_buttons</a>
+      <a href="#header">04_header</a>
+      <a href="#footer">05_footer</a>
+      <a href="#themejson">06_theme.json</a>
+    </nav>
+  </div>
+</header>
+
+<!-- COLORS -->
+<section class="block" id="colors">
+  <div class="container">
+    <div class="head">
+      <div class="num">// 01 &nbsp;color</div>
+      <div>
+        <h2>Black and teal, <span class="acc">anchored by a neutral scale.</span></h2>
+        <p class="intro">Black does the heavy lifting; teal carries the brand accent on CTAs and highlights. A full 9-step neutral scale handles everything else. Slugs map directly to <span class="mono">theme.json → settings.color.palette</span>.</p>
+      </div>
+    </div>
+
+    <div class="palette">
+      <div class="swatch"><div class="chip dark" style="background:#000000"><span class="tag">Primary</span></div><div class="meta"><span class="name">Black</span><span class="slug">--wp--preset--color--black</span><span class="hex">#000000</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#00B4B4"><span class="tag">Accent · CTA</span></div><div class="meta"><span class="name">Teal</span><span class="slug">--wp--preset--color--teal</span><span class="hex">#00B4B4</span></div></div>
+      <div class="swatch"><div class="chip dark" style="background:#009494"><span class="tag">Teal Hover</span></div><div class="meta"><span class="name">Teal Deep</span><span class="slug">--wp--preset--color--teal-deep</span><span class="hex">#009494</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#E0F7F7"><span class="tag">Teal Surface</span></div><div class="meta"><span class="name">Teal Soft</span><span class="slug">--wp--preset--color--teal-soft</span><span class="hex">#E0F7F7</span></div></div>
+
+      <div class="swatch"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--line)"><span class="tag">Canvas</span></div><div class="meta"><span class="name">White</span><span class="slug">--wp--preset--color--white</span><span class="hex">#FFFFFF</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#F7F7F7"><span class="tag">Surface</span></div><div class="meta"><span class="name">Gray 100</span><span class="slug">--wp--preset--color--gray-100</span><span class="hex">#F7F7F7</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#E5E5E5"><span class="tag">Borders</span></div><div class="meta"><span class="name">Gray 200</span><span class="slug">--wp--preset--color--gray-200</span><span class="hex">#E5E5E5</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#D4D4D4"><span class="tag">Dividers</span></div><div class="meta"><span class="name">Gray 300</span><span class="slug">--wp--preset--color--gray-300</span><span class="hex">#D4D4D4</span></div></div>
+
+      <div class="swatch"><div class="chip" style="background:#A3A3A3"><span class="tag">Disabled</span></div><div class="meta"><span class="name">Gray 400</span><span class="slug">--wp--preset--color--gray-400</span><span class="hex">#A3A3A3</span></div></div>
+      <div class="swatch"><div class="chip dark" style="background:#737373"><span class="tag">Muted Text</span></div><div class="meta"><span class="name">Gray 500</span><span class="slug">--wp--preset--color--gray-500</span><span class="hex">#737373</span></div></div>
+      <div class="swatch"><div class="chip dark" style="background:#525252"><span class="tag">Secondary Text</span></div><div class="meta"><span class="name">Gray 600</span><span class="slug">--wp--preset--color--gray-600</span><span class="hex">#525252</span></div></div>
+      <div class="swatch"><div class="chip dark" style="background:#171717"><span class="tag">Body Text</span></div><div class="meta"><span class="name">Gray 900 · Ink</span><span class="slug">--wp--preset--color--ink</span><span class="hex">#171717</span></div></div>
+    </div>
+
+    <div class="note" style="margin-top:28px">
+      <span class="pill">A11y</span>
+      <div>Body copy (<b>Ink #171717</b>) on White passes WCAG AAA. Teal (#00B4B4) on White fails AA for text at 16px — use it only as a <b>surface</b> (on CTAs with Black text), never as foreground text on light backgrounds. For text, use Teal Deep (#009494) which passes AA Large.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="block" id="type">
+  <div class="container">
+    <div class="head">
+      <div class="num">// 02 &nbsp;type</div>
+      <div>
+        <h2>Poppins <span class="acc">meets Roboto.</span></h2>
+        <p class="intro">Poppins handles display and UI (headings, nav, buttons). Roboto handles body and longer-form content. A single fluid scale via <span class="mono">clamp()</span> keeps rhythm from 375px to 1920px without breakpoint juggling.</p>
+      </div>
+    </div>
+
+    <div class="sg-two" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px">
+      <div style="border:1px solid var(--line);border-radius:10px;padding:28px;background:var(--white)">
+        <div class="eyebrow">Display &amp; UI · Sans</div>
+        <div style="font-family:'Poppins',sans-serif;font-size:96px;line-height:1;margin-top:14px;letter-spacing:-0.03em;font-weight:600">Aa</div>
+        <div style="display:flex;justify-content:space-between;margin-top:18px;padding-top:18px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--g-500)">
+          <span>Poppins</span><span>300, 400, 500, 600, 700</span>
+        </div>
+      </div>
+      <div style="border:1px solid var(--line);border-radius:10px;padding:28px;background:var(--white)">
+        <div class="eyebrow">Body · Sans</div>
+        <div style="font-family:'Roboto',sans-serif;font-size:96px;line-height:1;margin-top:14px;letter-spacing:-0.02em;font-weight:400">Aa</div>
+        <div style="display:flex;justify-content:space-between;margin-top:18px;padding-top:18px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--g-500)">
+          <span>Roboto</span><span>300, 400, 500, 700</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="type-row">
+        <div class="label">H1 · Display</div>
+        <div class="specimen poppins" style="font-size:clamp(44px,6vw,76px);line-height:1.02;font-weight:600;letter-spacing:-0.03em">Ship faster. Scale cleaner.</div>
+        <div class="specs"><b>clamp(44px, 6vw, 76px)</b><br/>lh 1.02 · weight 600<br/>tracking −0.03em</div>
+      </div>
+      <div class="type-row">
+        <div class="label">H2 · Section</div>
+        <div class="specimen poppins" style="font-size:clamp(32px,4vw,48px);line-height:1.15;font-weight:600;letter-spacing:-0.02em">Your dev partner, in-house or remote.</div>
+        <div class="specs"><b>clamp(32px, 4vw, 48px)</b><br/>lh 1.15 · weight 600<br/>tracking −0.02em</div>
+      </div>
+      <div class="type-row">
+        <div class="label">H3 · Card</div>
+        <div class="specimen poppins" style="font-size:clamp(22px,2vw,28px);line-height:1.2;letter-spacing:-0.01em;font-weight:600">Block theme development</div>
+        <div class="specs"><b>clamp(22px, 2vw, 28px)</b><br/>lh 1.2 · weight 600<br/>tracking −0.01em</div>
+      </div>
+      <div class="type-row">
+        <div class="label">H4 · Sub-card</div>
+        <div class="specimen poppins" style="font-size:20px;line-height:1.25;letter-spacing:-0.005em;font-weight:500">Service category</div>
+        <div class="specs"><b>20px</b><br/>lh 1.25 · weight 500</div>
+      </div>
+      <div class="type-row">
+        <div class="label">Lead</div>
+        <div class="specimen roboto" style="font-size:clamp(17px,1.4vw,20px);line-height:1.55;color:var(--g-700)">We build production-grade WordPress, web apps, and block themes for agencies and growing teams.</div>
+        <div class="specs"><b>clamp(17px, 1.4vw, 20px)</b><br/>lh 1.55 · weight 400</div>
+      </div>
+      <div class="type-row">
+        <div class="label">Body</div>
+        <div class="specimen roboto" style="font-size:16px;line-height:1.6">YohDev plugs into your workflow as an extension of the team. We ship features, maintain reliability, and translate design into clean, maintainable code.</div>
+        <div class="specs"><b>16px</b><br/>lh 1.6 · weight 400</div>
+      </div>
+      <div class="type-row">
+        <div class="label">Small</div>
+        <div class="specimen roboto" style="font-size:13.5px;color:var(--g-500);line-height:1.55">Available Mon–Fri · Remote-first · Based in the US</div>
+        <div class="specs"><b>13.5px</b><br/>lh 1.55 · weight 400<br/>muted</div>
+      </div>
+      <div class="type-row">
+        <div class="label">Eyebrow</div>
+        <div class="specimen poppins" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--teal-deep)">Services · Capabilities</div>
+        <div class="specs"><b>12px</b><br/>weight 600 · tracking 0.14em<br/>uppercase</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<section class="block" id="buttons">
+  <div class="container">
+    <div class="head">
+      <div class="num">// 03 &nbsp;buttons</div>
+      <div>
+        <h2>Three variants, <span class="acc">one shape.</span></h2>
+        <p class="intro">6px radius, Poppins 500 weight, 14.5px base. Primary on Teal (black text for contrast), Secondary as a quiet outline, Ghost for inline links with a trailing arrow.</p>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <div class="btn-cell">
+        <h3>Primary</h3>
+        <span class="caption">.wp-block-button.is-style-primary</span>
+        <div class="row">
+          <button type="button" class="b b-primary b-lg">Start a project <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+          <button type="button" class="b b-primary">Get in touch</button>
+          <button type="button" class="b b-primary b-sm">Learn more</button>
+          <button type="button" class="b b-primary b-disabled" disabled>Disabled</button>
+        </div>
+      </div>
+      <div class="btn-cell">
+        <h3>Secondary</h3>
+        <span class="caption">.wp-block-button.is-style-secondary</span>
+        <div class="row">
+          <button type="button" class="b b-secondary b-lg">See our work</button>
+          <button type="button" class="b b-secondary">Capabilities</button>
+          <button type="button" class="b b-secondary b-sm">View details</button>
+          <button type="button" class="b b-secondary b-disabled" disabled>Disabled</button>
+        </div>
+      </div>
+      <div class="btn-cell">
+        <h3>Ghost / Link</h3>
+        <span class="caption">.wp-block-button.is-style-ghost</span>
+        <div class="row">
+          <button type="button" class="b b-ghost" style="font-size:15px">Read the case study <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+          <button type="button" class="b b-ghost">Meet the team <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+          <button type="button" class="b b-ghost" style="font-size:13px">See all services <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:28px">
+      <span class="pill">Spec</span>
+      <div>
+        Radius <b>6px</b> · Padding <b>10px 18px</b> (default) / <b>13px 22px</b> (lg) / <b>7px 14px</b> (sm) · Font <b>Poppins 500 / 14.5px</b> · Focus ring <b>2px Teal, 2px offset</b> · Hover: Primary darkens to Teal Deep with white text, Secondary inverts to solid Black.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HEADER -->
+<section class="block" id="header">
+  <div class="container">
+    <div class="head">
+      <div class="num">// 04 &nbsp;header</div>
+      <div>
+        <h2>Announcement bar <span class="acc">+ sticky nav.</span></h2>
+        <p class="intro">Two stacked regions: a compact Black utility bar with a live status or CTA, and a White sticky nav with the wordmark, 5-item menu, and dual CTA (capabilities link + primary Start a project pill).</p>
+      </div>
+    </div>
+
+    <div class="nav-spec">
+      <div class="nav-ann">
+        <span>Accepting new retainers for Q2</span>
+        <span><span class="hl">&gt;_</span> &nbsp;hello@yohdev.com</span>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-logo">Yoh<span class="dev">Dev</span></div>
+        <div class="nav-links">
+          <span class="active">Services</span>
+          <span>Work</span>
+          <span>About</span>
+          <span>Process</span>
+          <span>Contact</span>
+        </div>
+        <div class="nav-cta">
+          <span class="b b-ghost" style="font-size:14px">Capabilities</span>
+          <span class="b b-primary" style="font-size:14px">Start a project</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:24px">
+      <span class="pill">Spec</span>
+      <div>Utility bar <b>38px</b> · Nav <b>80px</b> desktop / <b>64px</b> mobile · Menu gap <b>26px</b> · Active link: <b>Black</b> with <b>2px Teal</b> underline bar, 6px below baseline · Nav sticks with <span class="mono">position:sticky; top:0</span>, solid white — no blur.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<section class="block" id="footer">
+  <div class="container">
+    <div class="head">
+      <div class="num">// 05 &nbsp;footer</div>
+      <div>
+        <h2>Grounded in <span class="acc">Black.</span></h2>
+        <p class="intro">Four columns: brand + tagline, Services, Company, Resources. Teal eyebrow for column headings. Muted white links. Legal row below a 1px white-12% divider.</p>
+      </div>
+    </div>
+
+    <div class="foot-spec">
+      <div class="grid">
+        <div>
+          <div class="brand">Yoh<span class="dev">Dev</span></div>
+          <p class="blurb">Dev partner for growing agencies and in-house product teams. Block themes, web apps, and retainer engineering.</p>
+        </div>
+        <div class="col">
+          <div class="h">Services</div>
+          <span>Block theme dev</span><span>Web applications</span><span>Retainer engineering</span><span>Site performance</span>
+        </div>
+        <div class="col">
+          <div class="h">Company</div>
+          <span>About</span><span>Work</span><span>Process</span><span>Careers</span>
+        </div>
+        <div class="col">
+          <div class="h">Resources</div>
+          <span>Journal</span><span>Playbook</span><span>Contact</span><span>Status</span>
+        </div>
+      </div>
+      <div class="legal">
+        <div>© 2026 YohDev · All rights reserved</div>
+        <div style="display:flex;gap:24px"><span>Privacy</span><span>Terms</span><span>Accessibility</span></div>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:24px">
+      <span class="pill">Spec</span>
+      <div>Background <b>Black</b> · Column heading <b>11.5px / 600 / 0.14em / Teal</b> · Links <b>13.5px / white@72%</b>, hover <b>white</b> · Divider <b>1px white@12%</b> · Padding <b>80px 0 40px</b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- theme.json -->
+<section class="block" id="themejson" style="border-bottom:none">
+  <div class="container">
+    <div class="head">
+      <div class="num">// 06 &nbsp;theme.json</div>
+      <div>
+        <h2>Drop-in <span class="acc">token source.</span></h2>
+        <p class="intro">Paste into your custom block theme's <span class="mono">theme.json</span>. Slugs match the swatch grid above; fluid typography uses WP core <span class="mono">fluid</span> support, with matching <span class="mono">clamp()</span> fallbacks for ACF blocks.</p>
+      </div>
+    </div>
+
+<div class="code"><span class="c">// theme.json — YohDev custom block theme base</span>
+{
+  <span class="k">"$schema"</span>: <span class="s">"https://schemas.wp.org/trunk/theme.json"</span>,
+  <span class="k">"version"</span>: <span class="n">3</span>,
+  <span class="k">"settings"</span>: {
+    <span class="k">"appearanceTools"</span>: <span class="n">true</span>,
+    <span class="k">"useRootPaddingAwareAlignments"</span>: <span class="n">true</span>,
+    <span class="k">"layout"</span>: {
+      <span class="k">"contentSize"</span>: <span class="s">"720px"</span>,
+      <span class="k">"wideSize"</span>: <span class="s">"1280px"</span>
+    },
+    <span class="k">"color"</span>: {
+      <span class="k">"background"</span>: <span class="n">true</span>,
+      <span class="k">"text"</span>: <span class="n">true</span>,
+      <span class="k">"link"</span>: <span class="n">true</span>,
+      <span class="k">"custom"</span>: <span class="n">false</span>,
+      <span class="k">"customGradient"</span>: <span class="n">false</span>,
+      <span class="k">"palette"</span>: [
+        { <span class="k">"slug"</span>: <span class="s">"black"</span>,      <span class="k">"color"</span>: <span class="s">"#000000"</span>, <span class="k">"name"</span>: <span class="s">"Black"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"ink"</span>,        <span class="k">"color"</span>: <span class="s">"#171717"</span>, <span class="k">"name"</span>: <span class="s">"Ink"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"teal"</span>,       <span class="k">"color"</span>: <span class="s">"#00B4B4"</span>, <span class="k">"name"</span>: <span class="s">"Teal"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"teal-deep"</span>,  <span class="k">"color"</span>: <span class="s">"#009494"</span>, <span class="k">"name"</span>: <span class="s">"Teal Deep"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"teal-soft"</span>,  <span class="k">"color"</span>: <span class="s">"#E0F7F7"</span>, <span class="k">"name"</span>: <span class="s">"Teal Soft"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"white"</span>,      <span class="k">"color"</span>: <span class="s">"#FFFFFF"</span>, <span class="k">"name"</span>: <span class="s">"White"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"gray-100"</span>,   <span class="k">"color"</span>: <span class="s">"#F7F7F7"</span>, <span class="k">"name"</span>: <span class="s">"Gray 100"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"gray-200"</span>,   <span class="k">"color"</span>: <span class="s">"#E5E5E5"</span>, <span class="k">"name"</span>: <span class="s">"Gray 200"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"gray-300"</span>,   <span class="k">"color"</span>: <span class="s">"#D4D4D4"</span>, <span class="k">"name"</span>: <span class="s">"Gray 300"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"gray-400"</span>,   <span class="k">"color"</span>: <span class="s">"#A3A3A3"</span>, <span class="k">"name"</span>: <span class="s">"Gray 400"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"gray-500"</span>,   <span class="k">"color"</span>: <span class="s">"#737373"</span>, <span class="k">"name"</span>: <span class="s">"Gray 500"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"gray-600"</span>,   <span class="k">"color"</span>: <span class="s">"#525252"</span>, <span class="k">"name"</span>: <span class="s">"Gray 600"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"gray-700"</span>,   <span class="k">"color"</span>: <span class="s">"#404040"</span>, <span class="k">"name"</span>: <span class="s">"Gray 700"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"gray-800"</span>,   <span class="k">"color"</span>: <span class="s">"#262626"</span>, <span class="k">"name"</span>: <span class="s">"Gray 800"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"gray-900"</span>,   <span class="k">"color"</span>: <span class="s">"#171717"</span>, <span class="k">"name"</span>: <span class="s">"Gray 900"</span> }
+      ]
+    },
+    <span class="k">"typography"</span>: {
+      <span class="k">"fluid"</span>: <span class="n">true</span>,
+      <span class="k">"fontFamilies"</span>: [
+        {
+          <span class="k">"slug"</span>: <span class="s">"poppins"</span>,
+          <span class="k">"name"</span>: <span class="s">"Poppins"</span>,
+          <span class="k">"fontFamily"</span>: <span class="s">"\"Poppins\", sans-serif"</span>,
+          <span class="k">"fontFace"</span>: [
+            { <span class="k">"fontFamily"</span>: <span class="s">"Poppins"</span>, <span class="k">"fontWeight"</span>: <span class="s">"300 700"</span>, <span class="k">"fontStyle"</span>: <span class="s">"normal"</span>, <span class="k">"src"</span>: [ <span class="s">"file:./assets/fonts/poppins.woff2"</span> ] }
+          ]
+        },
+        {
+          <span class="k">"slug"</span>: <span class="s">"roboto"</span>,
+          <span class="k">"name"</span>: <span class="s">"Roboto"</span>,
+          <span class="k">"fontFamily"</span>: <span class="s">"\"Roboto\", sans-serif"</span>,
+          <span class="k">"fontFace"</span>: [
+            { <span class="k">"fontFamily"</span>: <span class="s">"Roboto"</span>, <span class="k">"fontWeight"</span>: <span class="s">"300 700"</span>, <span class="k">"fontStyle"</span>: <span class="s">"normal"</span>, <span class="k">"src"</span>: [ <span class="s">"file:./assets/fonts/roboto.woff2"</span> ] }
+          ]
+        }
+      ],
+      <span class="k">"fontSizes"</span>: [
+        { <span class="k">"slug"</span>: <span class="s">"xs"</span>,      <span class="k">"name"</span>: <span class="s">"XS"</span>,     <span class="k">"size"</span>: <span class="s">"12px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"small"</span>,   <span class="k">"name"</span>: <span class="s">"Small"</span>,  <span class="k">"size"</span>: <span class="s">"14px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"body"</span>,    <span class="k">"name"</span>: <span class="s">"Body"</span>,   <span class="k">"size"</span>: <span class="s">"16px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"lead"</span>,    <span class="k">"name"</span>: <span class="s">"Lead"</span>,   <span class="k">"size"</span>: <span class="s">"clamp(17px, 1.4vw, 20px)"</span>,
+          <span class="k">"fluid"</span>: { <span class="k">"min"</span>: <span class="s">"17px"</span>, <span class="k">"max"</span>: <span class="s">"20px"</span> } },
+        { <span class="k">"slug"</span>: <span class="s">"h4"</span>,      <span class="k">"name"</span>: <span class="s">"H4"</span>,     <span class="k">"size"</span>: <span class="s">"20px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"h3"</span>,      <span class="k">"name"</span>: <span class="s">"H3"</span>,     <span class="k">"size"</span>: <span class="s">"clamp(22px, 2vw, 28px)"</span>,
+          <span class="k">"fluid"</span>: { <span class="k">"min"</span>: <span class="s">"22px"</span>, <span class="k">"max"</span>: <span class="s">"28px"</span> } },
+        { <span class="k">"slug"</span>: <span class="s">"h2"</span>,      <span class="k">"name"</span>: <span class="s">"H2"</span>,     <span class="k">"size"</span>: <span class="s">"clamp(32px, 4vw, 48px)"</span>,
+          <span class="k">"fluid"</span>: { <span class="k">"min"</span>: <span class="s">"32px"</span>, <span class="k">"max"</span>: <span class="s">"48px"</span> } },
+        { <span class="k">"slug"</span>: <span class="s">"h1"</span>,      <span class="k">"name"</span>: <span class="s">"H1"</span>,     <span class="k">"size"</span>: <span class="s">"clamp(44px, 6vw, 76px)"</span>,
+          <span class="k">"fluid"</span>: { <span class="k">"min"</span>: <span class="s">"44px"</span>, <span class="k">"max"</span>: <span class="s">"76px"</span> } }
+      ]
+    },
+    <span class="k">"spacing"</span>: {
+      <span class="k">"units"</span>: [ <span class="s">"px"</span>, <span class="s">"rem"</span>, <span class="s">"%"</span>, <span class="s">"vw"</span> ],
+      <span class="k">"spacingSizes"</span>: [
+        { <span class="k">"slug"</span>: <span class="s">"1"</span>,  <span class="k">"name"</span>: <span class="s">"1"</span>,  <span class="k">"size"</span>: <span class="s">"4px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"2"</span>,  <span class="k">"name"</span>: <span class="s">"2"</span>,  <span class="k">"size"</span>: <span class="s">"8px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"4"</span>,  <span class="k">"name"</span>: <span class="s">"4"</span>,  <span class="k">"size"</span>: <span class="s">"16px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"6"</span>,  <span class="k">"name"</span>: <span class="s">"6"</span>,  <span class="k">"size"</span>: <span class="s">"24px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"8"</span>,  <span class="k">"name"</span>: <span class="s">"8"</span>,  <span class="k">"size"</span>: <span class="s">"32px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"12"</span>, <span class="k">"name"</span>: <span class="s">"12"</span>, <span class="k">"size"</span>: <span class="s">"48px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"16"</span>, <span class="k">"name"</span>: <span class="s">"16"</span>, <span class="k">"size"</span>: <span class="s">"64px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"24"</span>, <span class="k">"name"</span>: <span class="s">"24"</span>, <span class="k">"size"</span>: <span class="s">"96px"</span> },
+        { <span class="k">"slug"</span>: <span class="s">"32"</span>, <span class="k">"name"</span>: <span class="s">"32"</span>, <span class="k">"size"</span>: <span class="s">"128px"</span> }
+      ]
+    }
+  },
+  <span class="k">"styles"</span>: {
+    <span class="k">"color"</span>: {
+      <span class="k">"background"</span>: <span class="s">"var(--wp--preset--color--white)"</span>,
+      <span class="k">"text"</span>: <span class="s">"var(--wp--preset--color--ink)"</span>
+    },
+    <span class="k">"typography"</span>: {
+      <span class="k">"fontFamily"</span>: <span class="s">"var(--wp--preset--font-family--roboto)"</span>,
+      <span class="k">"fontSize"</span>: <span class="s">"var(--wp--preset--font-size--body)"</span>,
+      <span class="k">"lineHeight"</span>: <span class="s">"1.6"</span>
+    },
+    <span class="k">"elements"</span>: {
+      <span class="k">"link"</span>:   { <span class="k">"color"</span>: { <span class="k">"text"</span>: <span class="s">"var(--wp--preset--color--teal-deep)"</span> } },
+      <span class="k">"heading"</span>:{
+        <span class="k">"typography"</span>: {
+          <span class="k">"fontFamily"</span>: <span class="s">"var(--wp--preset--font-family--poppins)"</span>,
+          <span class="k">"fontWeight"</span>: <span class="s">"600"</span>,
+          <span class="k">"letterSpacing"</span>: <span class="s">"-0.02em"</span>,
+          <span class="k">"lineHeight"</span>: <span class="s">"1.2"</span>
+        }
+      },
+      <span class="k">"h1"</span>: { <span class="k">"typography"</span>: { <span class="k">"fontSize"</span>: <span class="s">"var(--wp--preset--font-size--h1)"</span>, <span class="k">"lineHeight"</span>: <span class="s">"1.02"</span>, <span class="k">"letterSpacing"</span>: <span class="s">"-0.03em"</span> } },
+      <span class="k">"h2"</span>: { <span class="k">"typography"</span>: { <span class="k">"fontSize"</span>: <span class="s">"var(--wp--preset--font-size--h2)"</span>, <span class="k">"lineHeight"</span>: <span class="s">"1.15"</span> } },
+      <span class="k">"h3"</span>: { <span class="k">"typography"</span>: { <span class="k">"fontSize"</span>: <span class="s">"var(--wp--preset--font-size--h3)"</span>, <span class="k">"lineHeight"</span>: <span class="s">"1.2"</span> } },
+      <span class="k">"h4"</span>: { <span class="k">"typography"</span>: { <span class="k">"fontSize"</span>: <span class="s">"var(--wp--preset--font-size--h4)"</span>, <span class="k">"lineHeight"</span>: <span class="s">"1.25"</span> } },
+      <span class="k">"button"</span>: {
+        <span class="k">"color"</span>: { <span class="k">"background"</span>: <span class="s">"var(--wp--preset--color--teal)"</span>, <span class="k">"text"</span>: <span class="s">"#000000"</span> },
+        <span class="k">"border"</span>: { <span class="k">"radius"</span>: <span class="s">"6px"</span> },
+        <span class="k">"spacing"</span>: { <span class="k">"padding"</span>: { <span class="k">"top"</span>: <span class="s">"10px"</span>, <span class="k">"bottom"</span>: <span class="s">"10px"</span>, <span class="k">"left"</span>: <span class="s">"18px"</span>, <span class="k">"right"</span>: <span class="s">"18px"</span> } },
+        <span class="k">"typography"</span>: { <span class="k">"fontFamily"</span>: <span class="s">"var(--wp--preset--font-family--poppins)"</span>, <span class="k">"fontWeight"</span>: <span class="s">"500"</span>, <span class="k">"fontSize"</span>: <span class="s">"14.5px"</span> },
+        <span class="k">":hover"</span>: { <span class="k">"color"</span>: { <span class="k">"background"</span>: <span class="s">"var(--wp--preset--color--teal-deep)"</span>, <span class="k">"text"</span>: <span class="s">"#FFFFFF"</span> } },
+        <span class="k">":focus"</span>: { <span class="k">"outline"</span>: { <span class="k">"color"</span>: <span class="s">"var(--wp--preset--color--teal)"</span>, <span class="k">"style"</span>: <span class="s">"solid"</span>, <span class="k">"width"</span>: <span class="s">"2px"</span>, <span class="k">"offset"</span>: <span class="s">"2px"</span> } }
+      }
+    },
+    <span class="k">"blocks"</span>: {
+      <span class="k">"core/button"</span>: {
+        <span class="k">"variations"</span>: {
+          <span class="k">"secondary"</span>: {
+            <span class="k">"color"</span>: { <span class="k">"background"</span>: <span class="s">"transparent"</span>, <span class="k">"text"</span>: <span class="s">"var(--wp--preset--color--black)"</span> },
+            <span class="k">"border"</span>: { <span class="k">"color"</span>: <span class="s">"var(--wp--preset--color--gray-300)"</span>, <span class="k">"width"</span>: <span class="s">"1px"</span>, <span class="k">"radius"</span>: <span class="s">"6px"</span> }
+          },
+          <span class="k">"ghost"</span>: {
+            <span class="k">"color"</span>: { <span class="k">"background"</span>: <span class="s">"transparent"</span>, <span class="k">"text"</span>: <span class="s">"var(--wp--preset--color--teal-deep)"</span> }
+          }
+        }
+      }
+    }
+  },
+  <span class="k">"customTemplates"</span>: [],
+  <span class="k">"templateParts"</span>: [
+    { <span class="k">"name"</span>: <span class="s">"header"</span>, <span class="k">"title"</span>: <span class="s">"Header"</span>, <span class="k">"area"</span>: <span class="s">"header"</span> },
+    { <span class="k">"name"</span>: <span class="s">"footer"</span>, <span class="k">"title"</span>: <span class="s">"Footer"</span>, <span class="k">"area"</span>: <span class="s">"footer"</span> }
+  ]
+}
+</div>
+
+    <div class="note" style="margin-top:28px">
+      <span class="pill">ACF</span>
+      <div>Custom ACF blocks should consume the same tokens via <span class="mono">var(--wp--preset--color--*)</span> and <span class="mono">var(--wp--preset--font-size--*)</span> — no hardcoded hex or px in block CSS. Register block variations (<span class="mono">secondary</span>, <span class="mono">ghost</span>) on <span class="mono">core/button</span> so editors can pick any of the three styles from the block toolbar.</div>
+    </div>
+  </div>
+</section>
+
+<footer style="padding:40px 0 72px;color:var(--g-500);font-size:12.5px;background:var(--true-black)">
+  <div class="container" style="display:flex;justify-content:space-between;color:rgba(255,255,255,0.55)">
+    <span>YohDev · Design System v1.0</span>
+    <span style="font-family:'JetBrains Mono',monospace">Poppins · Roboto · JetBrains Mono</span>
+  </div>
+</footer>
+
+</body>
+</html>
