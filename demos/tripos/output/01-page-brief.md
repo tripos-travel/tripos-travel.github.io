@@ -33,7 +33,7 @@ Every line is built from Jorge's stated positioning, but the sentences themselve
 - Feature lines under Organize / Companion / Together.
 - Band: "Built for the semester abroad." plus three lines.
 - **Open item:** no testimonials, stats or user counts anywhere, on purpose. Add only real ones.
-- **Open item:** the "Join the pilot" buttons scroll to the pilot section until `PILOT_FORM_URL` is set at the bottom of `Landing-Page.html`.
+- Pilot form linked: every "Join the pilot" button opens the Google Form in a new tab.
 
 ## Removed, do not reintroduce
 Hero image placeholder (the board is the visual), feature cards with icons, a testimonial slot, a stats row.
